@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
     this.loading.set(true);
     this.errorMessage.set('');
     this._authService.login({ email: email.trim().toLowerCase(), password }).subscribe({
-      next: () => this._router.navigate(['/dashboard']),
+      next: () => this._router.navigateByUrl(this._authService.homeRoute()),
       error: (error: HttpErrorResponse) => {
         this.loading.set(false);
         this.errorMessage.set(error.status === 401 ? 'Correo o contraseña incorrectos.' : 'No se pudo iniciar sesión. Intenta de nuevo.');

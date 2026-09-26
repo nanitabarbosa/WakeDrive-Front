@@ -4,22 +4,24 @@
       <mat-icon class="sidebar__logo">visibility</mat-icon>
       <span class="sidebar__brand-text">Wake<span>Drive</span></span>
     </div>
-    <button
-      type="button"
-      class="sidebar__company"
-      [matMenuTriggerFor]="companyMenu"
-      [disabled]="!companies().length"
-      [attr.title]="selectedCompany?.name ?? 'Sin empresas'"
-    >
-      <mat-icon>apartment</mat-icon>
-      <span class="sidebar__label">{{ selectedCompany?.name ?? 'Sin empresas' }}</span>
-      <mat-icon class="sidebar__label">expand_more</mat-icon>
-    </button>
-    <mat-menu #companyMenu="matMenu">
-      @for (company of companies(); track company.id) {
-        <button mat-menu-item (click)="selectCompany(company)">{{ company.name }}</button>
-      }
-    </mat-menu>
+    @if (!isSuperAdmin) {
+      <button
+        type="button"
+        class="sidebar__company"
+        [matMenuTriggerFor]="companyMenu"
+        [disabled]="!companies().length"
+        [attr.title]="selectedCompany?.name ?? 'Sin empresas'"
+      >
+        <mat-icon>apartment</mat-icon>
+        <span class="sidebar__label">{{ selectedCompany?.name ?? 'Sin empresas' }}</span>
+        <mat-icon class="sidebar__label">expand_more</mat-icon>
+      </button>
+      <mat-menu #companyMenu="matMenu">
+        @for (company of companies(); track company.id) {
+          <button mat-menu-item (click)="selectCompany(company)">{{ company.name }}</button>
+        }
+      </mat-menu>
+    }
     <div class="sidebar__nav" role="navigation">
       @for (item of navItems; track item.route) {
         <button
@@ -41,12 +43,14 @@
   </section>
   <div class="layout__main">
     <div class="topbar">
-      <button type="button" class="topbar__bell" aria-label="Notificaciones" (click)="openNotifications()">
-        <mat-icon>notifications</mat-icon>
-        @if (unreadNotifications) {
-          <span class="topbar__badge">{{ unreadNotifications > 9 ? '9+' : unreadNotifications }}</span>
-        }
-      </button>
+      @if (!isSuperAdmin) {
+        <button type="button" class="topbar__bell" aria-label="Notificaciones" (click)="openNotifications()">
+          <mat-icon>notifications</mat-icon>
+          @if (unreadNotifications) {
+            <span class="topbar__badge">{{ unreadNotifications > 9 ? '9+' : unreadNotifications }}</span>
+          }
+        </button>
+      }
       <button type="button" class="topbar__user" [matMenuTriggerFor]="userMenu">
         @if (user; as u) {
           <span class="avatar avatar--lg">{{ initials(u.name) }}</span>
@@ -65,7 +69,9 @@
           <span>Cerrar sesión</span>
         </button>
       </mat-menu>
-      <app-notifications-modal [open]="notificationsOpen()" (closed)="closeNotifications()" />
+      @if (!isSuperAdmin) {
+        <app-notifications-modal [open]="notificationsOpen()" (closed)="closeNotifications()" />
+      }
     </div>
     <section class="layout__content">
       <router-outlet />

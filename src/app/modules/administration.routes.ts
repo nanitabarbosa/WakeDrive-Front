@@ -1,11 +1,14 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from '../core/guards/auth.guard';
+import { roleGuard } from '../core/guards/role.guard';
 import { MainLayoutComponent } from '../shared/layouts/main-layout/main-layout.component';
 
 export const ADMINISTRATION_ROUTES: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
@@ -27,6 +30,12 @@ export const ADMINISTRATION_ROUTES: Routes = [
       {
         path: 'settings',
         loadComponent: () => import('./settings/pages/settings/settings.component').then(m => m.SettingsComponent),
+      },
+      {
+        path: 'onboarding',
+        canActivate: [roleGuard],
+        data: { roles: ['SUPER_ADMIN'] },
+        loadComponent: () => import('./onboarding/pages/onboarding/onboarding.component').then(m => m.OnboardingComponent),
       },
     ],
   },
