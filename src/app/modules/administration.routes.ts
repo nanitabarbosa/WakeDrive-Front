@@ -13,6 +13,10 @@ export const ADMINISTRATION_ROUTES: Routes = [
         path: 'dashboard',
         loadComponent: () => import('./dashboard/pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
       },
+      {
+        path: 'settings',
+        loadComponent: () => import('./settings/pages/settings/settings.component').then(m => m.SettingsComponent),
+      },
     ],
   },
 ];
