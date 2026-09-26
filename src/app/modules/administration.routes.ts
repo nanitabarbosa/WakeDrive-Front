@@ -21,6 +21,10 @@ export const ADMINISTRATION_ROUTES: Routes = [
         path: 'alerts',
         loadComponent: () => import('./alerts/pages/alert-list/alert-list.component').then(m => m.AlertListComponent),
       },
+      {
+        path: 'devices',
+        loadComponent: () => import('./devices/pages/device-list/device-list.component').then(m => m.DeviceListComponent),
+      },
     ],
   },
 ];
