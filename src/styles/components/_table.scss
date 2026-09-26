@@ -94,3 +94,53 @@
     }
   }
 }
+
+// Selección con checkboxes
+.table__check {
+  width: 44px;
+
+  input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--wd-primary);
+  }
+}
+
+.table__row--selected td {
+  background: #f5f9ff;
+}
+
+// Botones de acción por fila (ver, editar, eliminar)
+.row-actions {
+  display: inline-flex;
+  gap: 4px;
+
+  &__btn {
+    display: inline-flex;
+    padding: 5px;
+    color: var(--wd-primary);
+    background: none;
+    border: none;
+    border-radius: var(--wd-radius-sm);
+    cursor: pointer;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background: var(--wd-primary-soft);
+    }
+
+    &--danger {
+      color: var(--wd-danger);
+
+      &:hover {
+        background: var(--wd-danger-soft);
+      }
+    }
+  }
+}

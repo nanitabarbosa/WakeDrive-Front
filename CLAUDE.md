@@ -92,6 +92,13 @@ src/app/
 - Usar control flow (`@if`, `@for`) y signals.
 - Backend Spring Boot: `Page<T>` llega como `{ content, page: { size, number, totalElements, totalPages } }` (ver `core/interfaces/page.interface.ts`).
 
+## Paginación y filtros: SIEMPRE en el back (regla obligatoria)
+
+- Los listados se paginan, filtran y ordenan en el backend. El servicio envía `page` (base 0, como Spring), `size` y los filtros como `HttpParams` y devuelve `Page<T>`.
+- Nunca paginar, filtrar ni ordenar arreglos en el front (ni con `slice`, ni con `filter`, ni en datos de prueba).
+- Mientras el back no exista, los servicios apuntan igual a los endpoints reales (marcados con `TODO(back)`); la tabla muestra el error de carga.
+- Los selects/dropdowns consumen endpoints sin paginar que devuelven `T[]`.
+
 ---
 
 # Code conventions (reglas obligatorias)

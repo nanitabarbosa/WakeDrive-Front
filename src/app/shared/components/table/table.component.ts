@@ -10,6 +10,8 @@ import { TableCellContext, TableColumn } from './interfaces/table.interface';
  * - `columns`: columnas a mostrar (se pinta `row[column.key]`).
  * - `customColumns`: columnas que se pintan con el `<ng-template #cellTemplate let-row let-column="column">`.
  * - Filtros / botones del encabezado: contenido proyectado con el atributo `table-actions`.
+ * - Encabezado sin título (solo filtros): `[showToolbar]="true"`.
+ * - Selección con checkboxes (`selectable`): emite las filas marcadas en `(selectionChange)`.
  * - Paginación opcional (`paginated`): la página se controla desde el padre con `page` / `(pageChange)`.
  */
 @Component({
@@ -23,9 +25,13 @@ export class TableComponent<T> {
   @Input() icon = '';
   @Input() iconClass = '';
   @Input({ required: true }) columns: TableColumn[] = [];
-  @Input() data: T[] = [];
   @Input() customColumns: string[] = [];
   @Input() emptyMessage = 'No hay registros para mostrar.';
+  @Input() showToolbar = false;
+
+  @Input() selectable = false;
+  @Output() selectionChange = new EventEmitter<T[]>();
+  readonly selected = new Set<T>();
 
   @Input() paginated = false;
   @Input() page = 1;
@@ -34,6 +40,21 @@ export class TableComponent<T> {
   @Output() pageChange = new EventEmitter<number>();
 
   @ContentChild('cellTemplate') cellTemplate?: TemplateRef<TableCellContext<T>>;
+
+  private _data: T[] = [];
+
+  @Input()
+  set data(rows: T[]) {
+    this._data = rows ?? [];
+    // Al cambiar de página o de filtro se limpia la selección.
+    if (this.selected.size) {
+      this.selected.clear();
+      this.selectionChange.emit([]);
+    }
+  }
+  get data(): T[] {
+    return this._data;
+  }
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.total / this.pageSize));
@@ -54,12 +75,28 @@ export class TableComponent<T> {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 
+  get allSelected(): boolean {
+    return this._data.length > 0 && this._data.every(row => this.selected.has(row));
+  }
+
   isCustom(column: TableColumn): boolean {
     return this.customColumns.includes(column.key);
   }
 
   value(row: T, column: TableColumn): unknown {
     return (row as Record<string, unknown>)[column.key];
+  }
+
+  toggleRow(row: T): void {
+    if (this.selected.has(row)) this.selected.delete(row);
+    else this.selected.add(row);
+    this.selectionChange.emit([...this.selected]);
+  }
+
+  toggleAll(): void {
+    if (this.allSelected) this.selected.clear();
+    else this._data.forEach(row => this.selected.add(row));
+    this.selectionChange.emit([...this.selected]);
   }
 
   goToPage(page: number): void {
