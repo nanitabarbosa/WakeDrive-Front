@@ -1,18 +1,14 @@
 <section class="wrapper-section">
   <app-page-header title="Alertas" subtitle="Consulta y gestiona el historial completo de alertas generadas por los dispositivos." />
-
-  <!-- Filtros: todos se envían al back -->
   <article class="card filters">
     <div class="filters__field">
       <label for="alerts-from">Fecha inicio</label>
       <input id="alerts-from" type="date" class="input" [value]="filters().from" [max]="filters().to" (change)="onDateChange('from', $any($event.target).value)" />
     </div>
-
     <div class="filters__field">
       <label for="alerts-to">Fecha fin</label>
       <input id="alerts-to" type="date" class="input" [value]="filters().to" [min]="filters().from" [max]="today" (change)="onDateChange('to', $any($event.target).value)" />
     </div>
-
     <div class="filters__field">
       <label for="alerts-user">Usuario</label>
       <select id="alerts-user" class="select" (change)="onSelectChange('userId', $any($event.target).value)">
@@ -22,7 +18,6 @@
         }
       </select>
     </div>
-
     <div class="filters__field">
       <label for="alerts-vehicle">Vehículo</label>
       <select id="alerts-vehicle" class="select" (change)="onSelectChange('vehicleId', $any($event.target).value)">
@@ -32,7 +27,6 @@
         }
       </select>
     </div>
-
     <div class="filters__field">
       <label for="alerts-type">Tipo de alerta</label>
       <select id="alerts-type" class="select" (change)="onSelectChange('type', $any($event.target).value)">
@@ -42,7 +36,6 @@
         }
       </select>
     </div>
-
     <div class="filters__field">
       <label for="alerts-level">Nivel</label>
       <select id="alerts-level" class="select" (change)="onSelectChange('level', $any($event.target).value)">
@@ -52,7 +45,6 @@
         }
       </select>
     </div>
-
     <div class="filters__field filters__field--wide">
       <label for="alerts-location">Ubicación</label>
       <div class="filters__inline">
@@ -65,12 +57,10 @@
         </button>
       </div>
     </div>
-
     @if (dateError()) {
-      <p class="filters__error" role="alert">{{ dateError() }}</p>
+      <span class="filters__error" role="alert">{{ dateError() }}</span>
     }
   </article>
-
   <app-table
     [columns]="columns"
     [data]="alerts()"
@@ -92,7 +82,7 @@
           {{ alert.date | date: 'HH:mm:ss' }}
         }
         @case ('vehiclePlate') {
-          <strong>{{ alert.vehiclePlate }}</strong>
+          <span class="text-strong">{{ alert.vehiclePlate }}</span>
         }
         @case ('type') {
           <span class="badge badge--icon" [class.badge--warning]="alert.type === 'FACE_NOT_DETECTED'" [class.badge--danger]="alert.type !== 'FACE_NOT_DETECTED'">
@@ -117,6 +107,5 @@
       }
     </ng-template>
   </app-table>
-
   <app-alert-detail-drawer [open]="drawerOpen()" [alert]="selectedAlert()" (closed)="closeDetail()" />
 </section>

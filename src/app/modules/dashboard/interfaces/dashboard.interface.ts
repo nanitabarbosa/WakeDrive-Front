@@ -4,7 +4,6 @@ export type AlertLevel = 'HIGH' | 'MEDIUM';
 
 export interface TrendStat {
   total: number;
-  /** Variación porcentual frente al periodo anterior (puede ser negativa). */
   variation: number;
 }
 
@@ -20,13 +19,11 @@ export interface DeviceSummary {
   vehiclePlate: string;
   assignedUser: string;
   status: DeviceStatus;
-  /** Fecha ISO. */
   lastConnection: string;
 }
 
 export interface AlertSummary {
   id: number;
-  /** Fecha y hora ISO. */
   date: string;
   user: string;
   vehiclePlate: string;
@@ -37,7 +34,6 @@ export interface AlertSummary {
 }
 
 export interface DailyAlerts {
-  /** Fecha ISO (yyyy-MM-dd). */
   date: string;
   total: number;
 }
@@ -48,7 +44,6 @@ export interface UserAlertRanking {
   total: number;
 }
 
-/** Rango de fechas del dashboard (yyyy-MM-dd). */
 export interface DateRange {
   from: string;
   to: string;

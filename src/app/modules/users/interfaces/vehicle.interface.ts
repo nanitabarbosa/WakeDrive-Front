@@ -25,7 +25,6 @@ export interface VehicleFilters {
   search: string;
   type: VehicleType | '';
   status: RecordStatus | '';
-  /** Página en la UI (empieza en 1). */
   page: number;
   size: number;
 }

@@ -18,7 +18,6 @@ import { VinculationService } from '../../services/vinculation.service';
 export class VinculationDrawerComponent implements OnInit, OnChanges {
   @Input() open = false;
   @Output() closed = new EventEmitter<void>();
-  /** Emite el mensaje de éxito para mostrar en el snackbar. */
   @Output() saved = new EventEmitter<string>();
 
   readonly drivers = signal<SelectOption[]>([]);
@@ -40,7 +39,6 @@ export class VinculationDrawerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Las opciones se piden solo al abrir el panel (no mientras está cerrado).
     if (changes['open'] && this.open && this.form) {
       this.resetForm();
       this.loadOptions();

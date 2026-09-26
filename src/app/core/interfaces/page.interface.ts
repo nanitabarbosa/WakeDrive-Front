@@ -1,4 +1,3 @@
-/** Formato de `Page<T>` serializado por Spring Boot. */
 export interface Page<T> {
   content: T[];
   page: PageMeta;

@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-/** Muestra una fecha como tiempo relativo: "Hace 2 min", "Hace 3 horas", "Hace 1 día". */
 @Pipe({ name: 'timeAgo', standalone: true })
 export class TimeAgoPipe implements PipeTransform {
   transform(value: Date | string | null | undefined): string {

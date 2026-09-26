@@ -8,10 +8,6 @@ export interface ConfirmDialogData {
   confirmLabel?: string;
 }
 
-/**
- * Confirmación para acciones destructivas. Cierra con `true` si el usuario confirma.
- * Uso: this._dialog.open(ConfirmDialogComponent, { data: {...} }).afterClosed()
- */
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,

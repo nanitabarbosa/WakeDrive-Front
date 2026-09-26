@@ -1,11 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
-/**
- * Panel lateral derecho que se superpone al contenido.
- * Cuerpo: contenido proyectado. Pie: contenido con el atributo `drawer-footer`.
- * Se cierra con la X, clic en el fondo o Esc (emite `closed`; el padre pone `open` en false).
- */
 @Component({
   selector: 'app-drawer',
   standalone: true,

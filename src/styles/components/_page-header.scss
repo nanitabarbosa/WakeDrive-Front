@@ -5,6 +5,11 @@
   justify-content: space-between;
   gap: 16px;
 
+  &__title,
+  &__subtitle {
+    display: block;
+  }
+
   &__title {
     margin: 0 0 6px;
     font-size: 28px;

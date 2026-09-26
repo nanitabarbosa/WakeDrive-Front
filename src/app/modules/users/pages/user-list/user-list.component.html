@@ -1,7 +1,6 @@
 <section class="wrapper-section">
   <app-page-header title="Usuarios" subtitle="Gestiona los usuarios, vehículos y sus vinculaciones." />
-
-  <nav class="tabs" role="tablist">
+  <div class="tabs" role="tablist">
     @for (tab of tabs; track tab.id) {
       <button
         type="button"
@@ -15,9 +14,7 @@
         {{ tab.label }}
       </button>
     }
-  </nav>
-
-  <!-- Solo se crea la pestaña activa: las demás no hacen peticiones. -->
+  </div>
   @switch (activeTab()) {
     @case ('users') {
       <app-users-tab />

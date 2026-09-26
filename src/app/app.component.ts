@@ -10,7 +10,6 @@ import { MatIconRegistry } from '@angular/material/icon';
 })
 export class AppComponent {
   constructor(private _iconRegistry: MatIconRegistry) {
-    // <mat-icon> usa la fuente Material Symbols Outlined (cargada en index.html).
     this._iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
   }
 }

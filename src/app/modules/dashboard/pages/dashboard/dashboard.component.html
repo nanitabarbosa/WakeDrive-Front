@@ -10,85 +10,76 @@
         <button mat-menu-item (click)="setDateRange(preset)">{{ preset.label }}</button>
       }
     </mat-menu>
-
     <button type="button" class="dashboard__refresh" (click)="loadDashboard()" aria-label="Actualizar" title="Actualizar">
       <mat-icon>refresh</mat-icon>
     </button>
   </app-page-header>
-
-  <!-- Tarjetas de resumen: muestran "—" mientras no haya datos del back -->
   @let s = stats();
   @if (errors().stats) {
-    <p class="dashboard__notice" role="alert">
+    <span class="dashboard__notice" role="alert">
       <mat-icon>error_outline</mat-icon>No se pudo cargar el resumen. Intenta actualizar más tarde.
-    </p>
+    </span>
   }
   <div class="dashboard__stats">
     <article class="stat-card stat-card--blue">
       <span class="stat-card__icon"><mat-icon>local_shipping</mat-icon></span>
       <div>
-        <p class="stat-card__label">Vehículos registrados</p>
-        <p class="stat-card__value">{{ s?.vehicles?.total ?? '—' }}</p>
+        <span class="stat-card__label">Vehículos registrados</span>
+        <span class="stat-card__value">{{ s?.vehicles?.total ?? '—' }}</span>
         @if (s) {
           <span class="stat-card__trend" [class.stat-card__trend--good]="s.vehicles.variation >= 0" [class.stat-card__trend--bad]="s.vehicles.variation < 0">
             <mat-icon>{{ s.vehicles.variation >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>{{ s.vehicles.variation }}%
           </span>
-          <p class="stat-card__hint">vs. mes anterior</p>
+          <span class="stat-card__hint">vs. mes anterior</span>
         }
       </div>
     </article>
-
     <article class="stat-card stat-card--green">
       <span class="stat-card__icon"><mat-icon>group</mat-icon></span>
       <div>
-        <p class="stat-card__label">Usuarios activos</p>
-        <p class="stat-card__value">{{ s?.activeUsers?.total ?? '—' }}</p>
+        <span class="stat-card__label">Usuarios activos</span>
+        <span class="stat-card__value">{{ s?.activeUsers?.total ?? '—' }}</span>
         @if (s) {
           <span class="stat-card__trend" [class.stat-card__trend--good]="s.activeUsers.variation >= 0" [class.stat-card__trend--bad]="s.activeUsers.variation < 0">
             <mat-icon>{{ s.activeUsers.variation >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>{{ s.activeUsers.variation }}%
           </span>
-          <p class="stat-card__hint">vs. mes anterior</p>
+          <span class="stat-card__hint">vs. mes anterior</span>
         }
       </div>
     </article>
-
     <article class="stat-card stat-card--purple">
       <span class="stat-card__icon"><mat-icon>tablet_android</mat-icon></span>
       <div>
-        <p class="stat-card__label">Dispositivos</p>
-        <p class="stat-card__value">{{ s?.devices?.total ?? '—' }}</p>
+        <span class="stat-card__label">Dispositivos</span>
+        <span class="stat-card__value">{{ s?.devices?.total ?? '—' }}</span>
         @if (s) {
           <div class="stat-card__split">
             <span class="stat-card__split-item">
               <span class="stat-card__dot stat-card__dot--success"></span>
-              <span><strong>{{ s.devices.active }}</strong>Activos</span>
+              <span><span class="text-strong">{{ s.devices.active }}</span>Activos</span>
             </span>
             <span class="stat-card__split-item">
               <span class="stat-card__dot stat-card__dot--danger"></span>
-              <span><strong>{{ s.devices.offline }}</strong>Sin conexión</span>
+              <span><span class="text-strong">{{ s.devices.offline }}</span>Sin conexión</span>
             </span>
           </div>
         }
       </div>
     </article>
-
-    <!-- En alertas, subir es malo: el color se invierte -->
     <article class="stat-card stat-card--red">
       <span class="stat-card__icon"><mat-icon>warning</mat-icon></span>
       <div>
-        <p class="stat-card__label">Alertas hoy</p>
-        <p class="stat-card__value">{{ s?.alertsToday?.total ?? '—' }}</p>
+        <span class="stat-card__label">Alertas hoy</span>
+        <span class="stat-card__value">{{ s?.alertsToday?.total ?? '—' }}</span>
         @if (s) {
           <span class="stat-card__trend" [class.stat-card__trend--bad]="s.alertsToday.variation > 0" [class.stat-card__trend--good]="s.alertsToday.variation <= 0">
             <mat-icon>{{ s.alertsToday.variation >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>{{ s.alertsToday.variation }}%
           </span>
-          <p class="stat-card__hint">vs. día anterior</p>
+          <span class="stat-card__hint">vs. día anterior</span>
         }
       </div>
     </article>
   </div>
-
-  <!-- Estado de dispositivos: búsqueda y filtro se envían al back -->
   <app-table
     title="Estado de dispositivos"
     icon="smartphone"
@@ -107,8 +98,7 @@
       <option value="ACTIVE">Activo</option>
       <option value="OFFLINE">Sin conexión</option>
     </select>
-    <a class="btn-link" table-actions routerLink="/devices">Ver todos <mat-icon>arrow_forward</mat-icon></a>
-
+    <button type="button" class="btn-link" table-actions routerLink="/devices">Ver todos <mat-icon>arrow_forward</mat-icon></button>
     <ng-template #cellTemplate let-device let-column="column">
       @switch (column.key) {
         @case ('status') {
@@ -122,8 +112,6 @@
       }
     </ng-template>
   </app-table>
-
-  <!-- Últimas alertas: búsqueda y filtro se envían al back -->
   <app-table
     title="Últimas alertas"
     icon="notifications_active"
@@ -144,8 +132,7 @@
       <option value="DEVICE_OFF">Dispositivo apagado</option>
       <option value="CONNECTION_LOST">Pérdida de conexión</option>
     </select>
-    <a class="btn-link" table-actions routerLink="/alerts">Ver todas <mat-icon>arrow_forward</mat-icon></a>
-
+    <button type="button" class="btn-link" table-actions routerLink="/alerts">Ver todas <mat-icon>arrow_forward</mat-icon></button>
     <ng-template #cellTemplate let-alert let-column="column">
       @switch (column.key) {
         @case ('date') {
@@ -170,19 +157,16 @@
       }
     </ng-template>
   </app-table>
-
   <div class="dashboard__charts">
-    <!-- Alertas por día -->
     <article class="card">
       <div class="card__header">
-        <h2 class="card__title"><mat-icon class="icon--primary">bar_chart</mat-icon>Alertas por día</h2>
+        <span class="card__title"><mat-icon class="icon--primary">bar_chart</mat-icon>Alertas por día</span>
         <select class="select" [value]="chartDays()" (change)="onChartDaysChange($any($event.target).value)" aria-label="Periodo">
           @for (days of periodOptions; track days) {
             <option [value]="days">Últimos {{ days }} días</option>
           }
         </select>
       </div>
-
       @if (alertsByDay().length) {
         <div class="bar-chart">
           <div class="bar-chart__axis">
@@ -205,35 +189,32 @@
           </div>
         </div>
       } @else {
-        <p class="dashboard__empty">{{ errors().alertsByDay ? 'No se pudieron cargar las alertas por día.' : 'No hay datos para este periodo.' }}</p>
+        <span class="dashboard__empty">{{ errors().alertsByDay ? 'No se pudieron cargar las alertas por día.' : 'No hay datos para este periodo.' }}</span>
       }
     </article>
-
-    <!-- Usuarios con más alertas -->
     <article class="card">
       <div class="card__header">
-        <h2 class="card__title"><mat-icon>person</mat-icon>Usuarios con más alertas</h2>
+        <span class="card__title"><mat-icon>person</mat-icon>Usuarios con más alertas</span>
         <select class="select" [value]="rankingDays()" (change)="onRankingDaysChange($any($event.target).value)" aria-label="Periodo">
           @for (days of periodOptions; track days) {
             <option [value]="days">Últimos {{ days }} días</option>
           }
         </select>
       </div>
-
       @if (topUsers().length) {
-        <ol class="ranking">
+        <div class="ranking">
           @for (user of topUsers(); track user.userId; let i = $index) {
-            <li class="ranking__item">
+            <div class="ranking__item">
               <span class="ranking__position">{{ i + 1 }}</span>
               <span class="avatar" [style.background]="avatarColors[i % avatarColors.length]">{{ initials(user.name) }}</span>
               <span>{{ user.name }}</span>
               <span class="ranking__track"><span class="ranking__fill" [style.width.%]="(user.total / rankingMax()) * 100"></span></span>
               <span class="ranking__total">{{ user.total }}</span>
-            </li>
+            </div>
           }
-        </ol>
+        </div>
       } @else {
-        <p class="dashboard__empty">{{ errors().topUsers ? 'No se pudo cargar el ranking de usuarios.' : 'No hay datos para este periodo.' }}</p>
+        <span class="dashboard__empty">{{ errors().topUsers ? 'No se pudo cargar el ranking de usuarios.' : 'No hay datos para este periodo.' }}</span>
       }
     </article>
   </div>

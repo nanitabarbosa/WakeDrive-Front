@@ -133,7 +133,7 @@ Toda página empieza así:
 ```html
 <section class="wrapper-section">
   <app-page-header title="Usuarios" subtitle="Gestiona los usuarios de tu empresa.">
-    <!-- botones opcionales a la derecha -->
+    <button type="button" class="btn btn--primary">Nuevo usuario</button>
   </app-page-header>
   ...
 </section>
@@ -154,6 +154,26 @@ Toda página empieza así:
   <div class="form-section">...</div>
   <app-form-actions drawer-footer saveLabel="Guardar usuario" (save)="save()" (dismiss)="closeDrawer()" />
 </app-drawer>
+```
+
+## Sin comentarios (regla obligatoria)
+
+- No escribir comentarios en `.ts`, `.html` ni `.scss` (servicios, interfaces, componentes y hojas de estilo incluidos).
+- En los `.html` no dejar líneas en blanco.
+
+## Estructura HTML (regla obligatoria)
+
+- Solo se usan etiquetas generales: `div`, `section`, `article`, `span`, `button`, `input`, `select` (con sus `option`), `textarea`, `label`, `img`, `form`. Además los componentes de Angular (`app-*`, `mat-icon`, `mat-menu`, `ng-template`, `ng-container`, `ng-content`, `router-outlet`).
+- Prohibido: `h1`–`h6`, `p`, `ul`, `ol`, `li`, `table`, `thead`, `tbody`, `tr`, `th`, `td`, `strong`, `b`, `i`, y cualquier otra semántica (`a`, `nav`, `header`, `footer`, `aside`, `main`, `dl`, `dt`, `dd`, `small`, `em`).
+- Todo texto va en `span`; la jerarquía (título, subtítulo, etiqueta, texto en negrita con `.text-strong`) se define con clases CSS.
+- Navegación: `button` con `routerLink` (no `a`).
+- Tablas: siempre con `app-table`, que está construida con `div` (`.table`, `.table__header`, `.table__row`, `.table__head-cell`, `.table__cell`).
+
+```html
+<div class="card">
+  <span class="card__title">Información del usuario</span>
+  <span class="card__description">Datos generales del registro</span>
+</div>
 ```
 
 ## Componentes

@@ -1,4 +1,3 @@
-// Contenedor raíz de cada página: todas usan el mismo padding y separación.
 .wrapper-section {
   display: flex;
   flex-direction: column;
@@ -6,6 +5,3 @@
   width: 100%;
   padding: 16px 50px;
 }
-
-
-

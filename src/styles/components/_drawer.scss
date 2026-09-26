@@ -1,4 +1,3 @@
-// Panel lateral derecho: se superpone al contenido (no lo desplaza).
 .drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -29,7 +28,7 @@
     justify-content: space-between;
     padding: 24px 24px 8px;
 
-    h2 {
+    .drawer__title {
       margin: 0;
       font-size: 19px;
       font-weight: 700;
@@ -51,7 +50,6 @@
   }
 }
 
-// Secciones y campos de formulario dentro del panel
 .form-section {
   display: flex;
   flex-direction: column;
@@ -125,6 +123,7 @@
 }
 
 .form-section__hint {
+  display: block;
   margin: -4px 0 0;
   font-size: 13px;
   color: var(--wd-text-muted);
@@ -151,6 +150,7 @@
 }
 
 .form-alert {
+  display: block;
   margin: 0 24px 16px;
   padding: 10px 12px;
   font-size: 13px;
@@ -159,7 +159,6 @@
   border-radius: var(--wd-radius-sm);
 }
 
-// Detalle de solo lectura dentro del panel
 .detail-badges {
   display: flex;
   flex-wrap: wrap;
@@ -173,12 +172,11 @@
   margin: 0;
   font-size: 14px;
 
-  dt {
+  &__label {
     color: var(--wd-text-muted);
   }
 
-  dd {
-    margin: 0;
+  &__value {
     font-weight: 500;
   }
 }

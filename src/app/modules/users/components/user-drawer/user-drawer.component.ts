@@ -27,7 +27,6 @@ export class UserDrawerComponent implements OnInit, OnChanges {
   @Input() mode: DrawerMode = 'create';
   @Input() user: User | null = null;
   @Output() closed = new EventEmitter<void>();
-  /** Emite el mensaje de éxito para mostrar en el snackbar. */
   @Output() saved = new EventEmitter<string>();
 
   readonly roleLabels = USER_ROLE_LABELS;

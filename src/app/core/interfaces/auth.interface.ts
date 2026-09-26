@@ -5,7 +5,6 @@ export interface LoginRequest {
   password: string;
 }
 
-// TODO(back): confirmar contrato de la respuesta del login.
 export interface AuthResponse {
   token: string;
   roles: string[];

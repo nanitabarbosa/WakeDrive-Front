@@ -36,11 +36,10 @@
       </select>
     </div>
   </div>
-
   <ng-template #cellTemplate let-user let-column="column" let-index="index">
     @switch (column.key) {
       @case ('index') {
-        <strong>{{ rowNumber(index) }}</strong>
+        <span class="text-strong">{{ rowNumber(index) }}</span>
       }
       @case ('fullName') {
         <span class="user-cell">
@@ -72,5 +71,4 @@
     }
   </ng-template>
 </app-table>
-
 <app-user-drawer [open]="drawerOpen()" [mode]="drawerMode()" [user]="selectedUser()" (closed)="closeDrawer()" (saved)="onSaved($event)" />

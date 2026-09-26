@@ -7,14 +7,12 @@ import { Page } from '../../../core/interfaces/page.interface';
 import { buildPageParams } from '../../../core/utils/http-params';
 import { User, UserFilters, UserPayload } from '../interfaces/user.interface';
 
-// TODO(back): confirmar rutas y contratos con el backend.
 const ENDPOINT = `${environment.apiUrl}/users`;
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   constructor(private _http: HttpClient) {}
 
-  /** GET /users?page&size&search&role&status — paginado y filtrado en el back. */
   getUsers(filters: UserFilters): Observable<Page<User>> {
     return this._http.get<Page<User>>(ENDPOINT, { params: buildPageParams({ ...filters }) });
   }
