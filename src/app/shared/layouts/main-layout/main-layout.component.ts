@@ -25,7 +25,6 @@ export class MainLayoutComponent {
   readonly navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
     { label: 'Usuarios', icon: 'group', route: '/users' },
-    { label: 'Vehículos', icon: 'directions_car', route: '/vehicles' },
     { label: 'Alertas', icon: 'notifications', route: '/alerts' },
     { label: 'Configuración', icon: 'settings', route: '/settings' },
   ];
