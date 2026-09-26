@@ -24,12 +24,14 @@ interface NavItem {
 export class MainLayoutComponent implements OnInit {
   readonly collapsed = signal(false);
 
-  readonly navItems: NavItem[] = [
+  readonly companyNavItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
     { label: 'Usuarios', icon: 'group', route: '/users' },
     { label: 'Alertas', icon: 'notifications', route: '/alerts' },
     { label: 'Configuración', icon: 'settings', route: '/settings' },
   ];
+
+  readonly superAdminNavItems: NavItem[] = [{ label: 'Onboarding', icon: 'assignment', route: '/onboarding' }];
 
   readonly companies = signal<Company[]>([]);
   readonly notificationsOpen = signal(false);
@@ -39,6 +41,14 @@ export class MainLayoutComponent implements OnInit {
     private _companyService: CompanyService,
     private _notificationService: NotificationService,
   ) {}
+
+  get isSuperAdmin(): boolean {
+    return this._authService.isSuperAdmin();
+  }
+
+  get navItems(): NavItem[] {
+    return this.isSuperAdmin ? this.superAdminNavItems : this.companyNavItems;
+  }
 
   get user() {
     return this._authService.user();
@@ -53,6 +63,11 @@ export class MainLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadCompanyContext();
+  }
+
+  loadCompanyContext(): void {
+    if (this.isSuperAdmin) return;
     this.loadCompanies();
     this.loadNotificationCounts();
   }

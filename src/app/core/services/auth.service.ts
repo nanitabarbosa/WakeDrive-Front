@@ -28,14 +28,15 @@ export class AuthService {
   ) {}
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    // TODO(back): quitar el login simulado y descomentar la llamada real cuando el back esté listo.
+    // TODO(back): quitar el login simulado y descomentar la llamada real cuando el login del back esté listo.
     // return this._http
     //   .post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)
     //   .pipe(tap(res => this.setSession(res)));
+    const role = credentials.email.startsWith('superadmin') ? 'SUPER_ADMIN' : 'ADMIN';
     const mock: AuthResponse = {
       token: 'mock-token',
-      roles: ['ADMIN'],
-      user: { name: credentials.email, role: 'ADMIN' },
+      roles: [role],
+      user: { name: role === 'SUPER_ADMIN' ? 'Super Admin' : credentials.email, role },
     };
     return of(mock).pipe(tap(res => this.setSession(res)));
   }
@@ -46,6 +47,14 @@ export class AuthService {
     this._roles.set([]);
     this._user.set(null);
     this._router.navigate(['/auth/login']);
+  }
+
+  isSuperAdmin(): boolean {
+    return this._roles().includes('SUPER_ADMIN');
+  }
+
+  homeRoute(): string {
+    return this.isSuperAdmin() ? '/onboarding' : '/dashboard';
   }
 
   hasAnyRole(roles: string[]): boolean {
