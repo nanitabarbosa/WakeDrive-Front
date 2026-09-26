@@ -22,7 +22,6 @@ export const ALERT_LEVEL_LABELS: Record<string, string> = {
 
 export interface Alert {
   id: number;
-  /** Fecha y hora ISO. */
   date: string;
   userId: number;
   userName: string;
@@ -36,21 +35,17 @@ export interface Alert {
 }
 
 export interface AlertFilters {
-  /** yyyy-MM-dd */
   from: string;
-  /** yyyy-MM-dd */
   to: string;
   userId: number | '';
   vehicleId: number | '';
   type: AlertType | '';
   level: AlertLevel | '';
   location: string;
-  /** Página en la UI (empieza en 1). */
   page: number;
   size: number;
 }
 
-/** Opción de los selects de filtro (usuarios, vehículos). */
 export interface FilterOption {
   id: number;
   label: string;

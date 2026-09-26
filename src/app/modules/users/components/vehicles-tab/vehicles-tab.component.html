@@ -36,11 +36,10 @@
       </select>
     </div>
   </div>
-
   <ng-template #cellTemplate let-vehicle let-column="column" let-index="index">
     @switch (column.key) {
       @case ('index') {
-        <strong>{{ rowNumber(index) }}</strong>
+        <span class="text-strong">{{ rowNumber(index) }}</span>
       }
       @case ('plate') {
         <span class="plate">{{ vehicle.plate }}</span>
@@ -69,5 +68,4 @@
     }
   </ng-template>
 </app-table>
-
 <app-vehicle-drawer [open]="drawerOpen()" [mode]="drawerMode()" [vehicle]="selectedVehicle()" (closed)="closeDrawer()" (saved)="onSaved($event)" />

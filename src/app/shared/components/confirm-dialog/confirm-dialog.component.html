@@ -1,7 +1,7 @@
 <div class="confirm-dialog">
   <span class="confirm-dialog__icon"><mat-icon>warning</mat-icon></span>
-  <h2 class="confirm-dialog__title">{{ data.title }}</h2>
-  <p class="confirm-dialog__message">{{ data.message }}</p>
+  <span class="confirm-dialog__title">{{ data.title }}</span>
+  <span class="confirm-dialog__message">{{ data.message }}</span>
   <div class="confirm-dialog__actions">
     <button type="button" class="btn btn--outline" (click)="close(false)">Cancelar</button>
     <button type="button" class="btn btn--danger" (click)="close(true)">{{ data.confirmLabel || 'Eliminar' }}</button>

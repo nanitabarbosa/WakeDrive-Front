@@ -1,4 +1,3 @@
-/** Vínculo conductor ↔ vehículo ↔ dispositivo. */
 export interface Vinculation {
   id: number;
   userId: number;
@@ -17,12 +16,10 @@ export interface VinculationPayload {
 
 export interface VinculationFilters {
   search: string;
-  /** Página en la UI (empieza en 1). */
   page: number;
   size: number;
 }
 
-/** Opción para los selects del formulario de vinculación. */
 export interface SelectOption {
   id: number;
   label: string;

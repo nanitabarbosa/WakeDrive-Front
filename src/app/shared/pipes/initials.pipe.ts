@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-/** "Juan Pérez" → "JP" (máximo dos letras). */
 @Pipe({ name: 'initials', standalone: true })
 export class InitialsPipe implements PipeTransform {
   transform(name: string | null | undefined): string {

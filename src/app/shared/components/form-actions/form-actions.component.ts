@@ -1,9 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-/**
- * Botones Cancelar / Guardar de los formularios.
- * Uso: <app-form-actions saveLabel="Guardar usuario" [disabled]="form.invalid" (save)="save()" (dismiss)="close()" />
- */
 @Component({
   selector: 'app-form-actions',
   standalone: true,

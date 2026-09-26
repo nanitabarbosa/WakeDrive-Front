@@ -24,7 +24,6 @@ export class VehicleDrawerComponent implements OnInit, OnChanges {
   @Input() mode: DrawerMode = 'create';
   @Input() vehicle: Vehicle | null = null;
   @Output() closed = new EventEmitter<void>();
-  /** Emite el mensaje de éxito para mostrar en el snackbar. */
   @Output() saved = new EventEmitter<string>();
 
   readonly typeOptions = Object.entries(VEHICLE_TYPE_LABELS);
@@ -55,7 +54,6 @@ export class VehicleDrawerComponent implements OnInit, OnChanges {
 
   buildForm(): void {
     this.form = this._fb.nonNullable.group({
-      // Placas colombianas: ABC123 (carros) o ABC12D (motos), con o sin guion.
       plate: ['', [Validators.required, Validators.pattern(/^[A-Za-z]{3}-?\d{2}[0-9A-Za-z]$/)]],
       brand: ['', [Validators.required, Validators.maxLength(50)]],
       model: ['', [Validators.required, Validators.maxLength(50)]],

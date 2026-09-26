@@ -28,7 +28,6 @@ export interface UserFilters {
   search: string;
   role: UserRole | '';
   status: RecordStatus | '';
-  /** Página en la UI (empieza en 1). */
   page: number;
   size: number;
 }

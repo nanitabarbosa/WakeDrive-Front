@@ -2,62 +2,55 @@
   @if (title || showToolbar) {
     <div class="card__header">
       @if (title) {
-        <h2 class="card__title">
+        <span class="card__title">
           @if (icon) {
             <mat-icon [class]="iconClass">{{ icon }}</mat-icon>
           }
           {{ title }}
-        </h2>
+        </span>
       }
       <div class="card__actions"><ng-content select="[table-actions]" /></div>
     </div>
   }
-
   <div class="table-wrapper">
-    <table class="table">
-      <thead>
-        <tr>
+    <div class="table" role="table">
+      <div class="table__header" role="row">
+        @if (selectable) {
+          <div class="table__head-cell table__check" role="columnheader">
+            <input type="checkbox" [checked]="allSelected" (change)="toggleAll()" aria-label="Seleccionar todos" />
+          </div>
+        }
+        @for (column of columns; track column.key) {
+          <span class="table__head-cell" role="columnheader" [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'">{{ column.label }}</span>
+        }
+      </div>
+      @for (row of data; track $index; let i = $index) {
+        <div class="table__row" role="row" [class.table__row--selected]="selected.has(row)">
           @if (selectable) {
-            <th class="table__check">
-              <input type="checkbox" [checked]="allSelected" (change)="toggleAll()" aria-label="Seleccionar todos" />
-            </th>
+            <div class="table__cell table__check" role="cell">
+              <input type="checkbox" [checked]="selected.has(row)" (change)="toggleRow(row)" aria-label="Seleccionar fila" />
+            </div>
           }
           @for (column of columns; track column.key) {
-            <th [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'">{{ column.label }}</th>
+            <div class="table__cell" role="cell" [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'">
+              @if (isCustom(column) && cellTemplate) {
+                <ng-container *ngTemplateOutlet="cellTemplate; context: { $implicit: row, column: column, index: i }" />
+              } @else {
+                <span>{{ value(row, column) }}</span>
+              }
+            </div>
           }
-        </tr>
-      </thead>
-      <tbody>
-        @for (row of data; track $index; let i = $index) {
-          <tr [class.table__row--selected]="selected.has(row)">
-            @if (selectable) {
-              <td class="table__check">
-                <input type="checkbox" [checked]="selected.has(row)" (change)="toggleRow(row)" aria-label="Seleccionar fila" />
-              </td>
-            }
-            @for (column of columns; track column.key) {
-              <td [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'">
-                @if (isCustom(column) && cellTemplate) {
-                  <ng-container *ngTemplateOutlet="cellTemplate; context: { $implicit: row, column: column, index: i }" />
-                } @else {
-                  {{ value(row, column) }}
-                }
-              </td>
-            }
-          </tr>
-        } @empty {
-          <tr>
-            <td class="table__empty" [attr.colspan]="columns.length + (selectable ? 1 : 0)">{{ emptyMessage }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+        </div>
+      }
+    </div>
+    @if (!data.length) {
+      <span class="table__empty">{{ emptyMessage }}</span>
+    }
   </div>
-
   @if (paginated && total > 0) {
-    <footer class="pagination">
+    <div class="pagination">
       <span>Mostrando {{ rangeStart }} a {{ rangeEnd }} de {{ total }} resultados</span>
-      <nav class="pagination__pages" aria-label="Paginación">
+      <div class="pagination__pages" role="navigation" aria-label="Paginación">
         <button type="button" class="pagination__btn" [disabled]="page === 1" (click)="goToPage(page - 1)" aria-label="Página anterior">
           <mat-icon>arrow_back</mat-icon>
         </button>
@@ -71,7 +64,7 @@
         <button type="button" class="pagination__btn" [disabled]="page === totalPages" (click)="goToPage(page + 1)" aria-label="Página siguiente">
           <mat-icon>arrow_forward</mat-icon>
         </button>
-      </nav>
-    </footer>
+      </div>
+    </div>
   }
 </article>

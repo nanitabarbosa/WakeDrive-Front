@@ -27,7 +27,6 @@ interface DateRangePreset {
 }
 
 const DAY = 24 * 60 * 60 * 1000;
-/** Cantidad de filas de las tablas y del ranking del dashboard. */
 const LIMIT = 5;
 
 @Component({
@@ -77,7 +76,6 @@ export class DashboardComponent implements OnInit {
   readonly periodOptions = [7, 14, 30];
   readonly avatarColors = ['#2f6fed', '#16a34a', '#f59e0b', '#7c5cf5', '#ec4899'];
 
-  // Datos (vienen del back) y estado de error de cada bloque.
   readonly stats = signal<DashboardStats | null>(null);
   readonly devices = signal<DeviceSummary[]>([]);
   readonly alerts = signal<AlertSummary[]>([]);
@@ -85,7 +83,6 @@ export class DashboardComponent implements OnInit {
   readonly topUsers = signal<UserAlertRanking[]>([]);
   readonly errors = signal({ stats: false, devices: false, alerts: false, alertsByDay: false, topUsers: false });
 
-  // Filtros: se envían al back.
   readonly dateRange = signal({ start: new Date(), end: new Date() });
   readonly deviceSearch = signal('');
   readonly deviceStatus = signal<DeviceStatus | ''>('');
@@ -94,7 +91,6 @@ export class DashboardComponent implements OnInit {
   readonly chartDays = signal(7);
   readonly rankingDays = signal(7);
 
-  /** Tope del eje Y: el máximo redondeado hacia arriba al múltiplo de 5. */
   readonly chartMax = computed(() => Math.max(5, Math.ceil(Math.max(0, ...this.alertsByDay().map(d => d.total)) / 5) * 5));
   readonly chartTicks = computed(() => Array.from({ length: this.chartMax() / 5 + 1 }, (_, i) => i * 5));
   readonly rankingMax = computed(() => Math.max(1, ...this.topUsers().map(u => u.total)));

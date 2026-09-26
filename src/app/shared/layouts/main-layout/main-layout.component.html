@@ -1,10 +1,9 @@
 <div class="layout" [class.layout--collapsed]="collapsed()">
-  <aside class="sidebar">
+  <section class="sidebar">
     <div class="sidebar__brand">
       <mat-icon class="sidebar__logo">visibility</mat-icon>
       <span class="sidebar__brand-text">Wake<span>Drive</span></span>
     </div>
-
     <button
       type="button"
       class="sidebar__company"
@@ -21,10 +20,10 @@
         <button mat-menu-item (click)="selectCompany(company)">{{ company.name }}</button>
       }
     </mat-menu>
-
-    <nav class="sidebar__nav">
+    <div class="sidebar__nav" role="navigation">
       @for (item of navItems; track item.route) {
-        <a
+        <button
+          type="button"
           class="sidebar__link"
           [routerLink]="item.route"
           routerLinkActive="sidebar__link--active"
@@ -32,28 +31,25 @@
         >
           <mat-icon>{{ item.icon }}</mat-icon>
           <span class="sidebar__label">{{ item.label }}</span>
-        </a>
+        </button>
       }
-    </nav>
-
+    </div>
     <button type="button" class="sidebar__collapse" (click)="toggleMenu()">
       <mat-icon>{{ collapsed() ? 'arrow_forward' : 'arrow_back' }}</mat-icon>
       <span class="sidebar__label">Contraer menú</span>
     </button>
-  </aside>
-
+  </section>
   <div class="layout__main">
-    <header class="topbar">
-      <a class="topbar__bell" routerLink="/alerts" aria-label="Alertas">
+    <div class="topbar">
+      <button type="button" class="topbar__bell" routerLink="/alerts" aria-label="Alertas">
         <mat-icon>notifications</mat-icon>
-      </a>
-
+      </button>
       <button type="button" class="topbar__user" [matMenuTriggerFor]="userMenu">
         @if (user; as u) {
           <span class="avatar avatar--lg">{{ initials(u.name) }}</span>
           <span class="topbar__user-info">
-            <strong>{{ u.name }}</strong>
-            <small>{{ u.role }}</small>
+            <span class="topbar__user-name">{{ u.name }}</span>
+            <span class="topbar__user-role">{{ u.role }}</span>
           </span>
         } @else {
           <span class="avatar avatar--lg"><mat-icon>person</mat-icon></span>
@@ -66,10 +62,9 @@
           <span>Cerrar sesión</span>
         </button>
       </mat-menu>
-    </header>
-
-    <main class="layout__content">
+    </div>
+    <section class="layout__content">
       <router-outlet />
-    </main>
+    </section>
   </div>
 </div>

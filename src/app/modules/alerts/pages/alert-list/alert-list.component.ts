@@ -146,7 +146,6 @@ export class AlertListComponent implements OnInit {
     this.drawerOpen.set(false);
   }
 
-  /** Cualquier cambio de filtro vuelve a la página 1 y consulta al back. */
   private updateFilters(changes: Partial<AlertFilters>): void {
     this.filters.update(filters => ({ ...filters, ...changes, page: 1 }));
     this.loadAlerts();

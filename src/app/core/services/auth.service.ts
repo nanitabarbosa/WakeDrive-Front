@@ -27,7 +27,6 @@ export class AuthService {
     private _router: Router,
   ) {}
 
-  // TODO(back): confirmar endpoint.
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this._http
       .post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)

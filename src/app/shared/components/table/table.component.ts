@@ -4,16 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { TableCellContext, TableColumn } from './interfaces/table.interface';
 
-/**
- * Tabla reutilizable dentro de una card.
- *
- * - `columns`: columnas a mostrar (se pinta `row[column.key]`).
- * - `customColumns`: columnas que se pintan con el `<ng-template #cellTemplate let-row let-column="column">`.
- * - Filtros / botones del encabezado: contenido proyectado con el atributo `table-actions`.
- * - Encabezado sin título (solo filtros): `[showToolbar]="true"`.
- * - Selección con checkboxes (`selectable`): emite las filas marcadas en `(selectionChange)`.
- * - Paginación opcional (`paginated`): la página se controla desde el padre con `page` / `(pageChange)`.
- */
 @Component({
   selector: 'app-table',
   standalone: true,
@@ -46,7 +36,6 @@ export class TableComponent<T> {
   @Input()
   set data(rows: T[]) {
     this._data = rows ?? [];
-    // Al cambiar de página o de filtro se limpia la selección.
     if (this.selected.size) {
       this.selected.clear();
       this.selectionChange.emit([]);
@@ -68,10 +57,6 @@ export class TableComponent<T> {
     return Math.min(this.page * this.pageSize, this.total);
   }
 
-  /**
-   * Botones de página: hasta 5 alrededor de la actual, más la primera y la última
-   * con "…" (null) cuando hay saltos. Ej: 1 2 3 4 5 … 25
-   */
   get visiblePages(): (number | null)[] {
     const total = this.totalPages;
     const start = Math.max(1, Math.min(this.page - 2, total - 4));

@@ -5,7 +5,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { DrawerComponent } from '../../../../shared/components/drawer/drawer.component';
 import { ALERT_LEVEL_LABELS, ALERT_TYPE_ICONS, ALERT_TYPE_LABELS, Alert } from '../../interfaces/alert.interface';
 
-/** Detalle de una alerta (solo lectura). */
 @Component({
   selector: 'app-alert-detail-drawer',
   standalone: true,

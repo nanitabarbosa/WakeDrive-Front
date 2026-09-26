@@ -1,9 +1,8 @@
 <app-drawer title="Nueva vinculación" [open]="open" (closed)="closed.emit()">
   <form [formGroup]="form" (ngSubmit)="save()" novalidate>
     <div class="form-section">
-      <h3 class="form-section__title"><mat-icon>link</mat-icon>Vinculación</h3>
-      <p class="form-section__hint">Asigna un conductor a un vehículo y al dispositivo instalado en él. Solo se listan los que aún no están vinculados.</p>
-
+      <span class="form-section__title"><mat-icon>link</mat-icon>Vinculación</span>
+      <span class="form-section__hint">Asigna un conductor a un vehículo y al dispositivo instalado en él. Solo se listan los que aún no están vinculados.</span>
       <div class="form-field">
         <label for="vinculation-user">Conductor <span class="required">*</span></label>
         <select id="vinculation-user" formControlName="userId" [class.is-invalid]="hasError('userId')">
@@ -13,10 +12,9 @@
           }
         </select>
         @if (hasError('userId')) {
-          <small class="form-field__error">Selecciona un conductor.</small>
+          <span class="form-field__error">Selecciona un conductor.</span>
         }
       </div>
-
       <div class="form-field">
         <label for="vinculation-vehicle">Vehículo <span class="required">*</span></label>
         <select id="vinculation-vehicle" formControlName="vehicleId" [class.is-invalid]="hasError('vehicleId')">
@@ -26,10 +24,9 @@
           }
         </select>
         @if (hasError('vehicleId')) {
-          <small class="form-field__error">Selecciona un vehículo.</small>
+          <span class="form-field__error">Selecciona un vehículo.</span>
         }
       </div>
-
       <div class="form-field">
         <label for="vinculation-device">Dispositivo <span class="required">*</span></label>
         <select id="vinculation-device" formControlName="deviceSerial" [class.is-invalid]="hasError('deviceSerial')">
@@ -39,15 +36,13 @@
           }
         </select>
         @if (hasError('deviceSerial')) {
-          <small class="form-field__error">Selecciona un dispositivo.</small>
+          <span class="form-field__error">Selecciona un dispositivo.</span>
         }
       </div>
     </div>
-
     @if (errorMessage()) {
-      <p class="form-alert" role="alert">{{ errorMessage() }}</p>
+      <span class="form-alert" role="alert">{{ errorMessage() }}</span>
     }
   </form>
-
   <app-form-actions drawer-footer saveLabel="Vincular" [loading]="saving()" (save)="save()" (dismiss)="closed.emit()" />
 </app-drawer>

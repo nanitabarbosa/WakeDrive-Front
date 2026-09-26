@@ -21,11 +21,10 @@
       </button>
     </div>
   </div>
-
   <ng-template #cellTemplate let-item let-column="column" let-index="index">
     @switch (column.key) {
       @case ('index') {
-        <strong>{{ rowNumber(index) }}</strong>
+        <span class="text-strong">{{ rowNumber(index) }}</span>
       }
       @case ('userName') {
         <span class="user-cell">
@@ -49,5 +48,4 @@
     }
   </ng-template>
 </app-table>
-
 <app-vinculation-drawer [open]="drawerOpen()" (closed)="closeDrawer()" (saved)="onSaved($event)" />

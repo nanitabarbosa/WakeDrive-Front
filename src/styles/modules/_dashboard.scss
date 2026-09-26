@@ -28,14 +28,12 @@
     padding: 0 10px;
   }
 
-  // Tarjetas de resumen
   &__stats {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
   }
 
-  // Gráficas inferiores
   &__charts {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -120,7 +118,7 @@
     gap: 10px;
     font-size: 12px;
 
-    strong {
+    .text-strong {
       display: block;
       font-size: 13px;
     }
@@ -194,7 +192,6 @@
   }
 }
 
-// Gráfica de barras: alertas por día
 .bar-chart {
   display: flex;
   gap: 12px;
@@ -252,7 +249,6 @@
   }
 }
 
-// Ranking: usuarios con más alertas
 .ranking {
   margin: 0;
   padding: 4px 20px 16px;
@@ -311,7 +307,6 @@
   }
 }
 
-// Estados sin datos / error (mientras el back no responda)
 .dashboard__notice {
   display: flex;
   align-items: center;
@@ -336,4 +331,11 @@
   text-align: center;
   font-size: 13px;
   color: var(--wd-text-muted);
+}
+
+.stat-card__label,
+.stat-card__value,
+.stat-card__hint,
+.dashboard__empty {
+  display: block;
 }

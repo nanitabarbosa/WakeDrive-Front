@@ -7,14 +7,12 @@ import { Page } from '../../../core/interfaces/page.interface';
 import { buildPageParams } from '../../../core/utils/http-params';
 import { Vehicle, VehicleFilters, VehiclePayload } from '../interfaces/vehicle.interface';
 
-// TODO(back): confirmar rutas y contratos con el backend.
 const ENDPOINT = `${environment.apiUrl}/vehicles`;
 
 @Injectable({ providedIn: 'root' })
 export class VehicleService {
   constructor(private _http: HttpClient) {}
 
-  /** GET /vehicles?page&size&search&type&status — paginado y filtrado en el back. */
   getVehicles(filters: VehicleFilters): Observable<Page<Vehicle>> {
     return this._http.get<Page<Vehicle>>(ENDPOINT, { params: buildPageParams({ ...filters }) });
   }
