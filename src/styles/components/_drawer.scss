@@ -158,3 +158,27 @@
   background: var(--wd-danger-soft);
   border-radius: var(--wd-radius-sm);
 }
+
+// Detalle de solo lectura dentro del panel
+.detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px 12px;
+  margin: 0;
+  font-size: 14px;
+
+  dt {
+    color: var(--wd-text-muted);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 500;
+  }
+}

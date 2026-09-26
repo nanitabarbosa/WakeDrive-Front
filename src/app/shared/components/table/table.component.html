@@ -61,8 +61,12 @@
         <button type="button" class="pagination__btn" [disabled]="page === 1" (click)="goToPage(page - 1)" aria-label="Página anterior">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        @for (p of visiblePages; track p) {
-          <button type="button" class="pagination__btn" [class.pagination__btn--active]="p === page" (click)="goToPage(p)">{{ p }}</button>
+        @for (p of visiblePages; track $index) {
+          @if (p === null) {
+            <span class="pagination__ellipsis">…</span>
+          } @else {
+            <button type="button" class="pagination__btn" [class.pagination__btn--active]="p === page" (click)="goToPage(p)">{{ p }}</button>
+          }
         }
         <button type="button" class="pagination__btn" [disabled]="page === totalPages" (click)="goToPage(page + 1)" aria-label="Página siguiente">
           <mat-icon>arrow_forward</mat-icon>

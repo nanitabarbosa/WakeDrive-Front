@@ -1,0 +1,37 @@
+<app-drawer title="Detalle de la alerta" [open]="open" (closed)="closed.emit()">
+  @if (alert; as a) {
+    <div class="form-section">
+      <h3 class="form-section__title"><mat-icon>notifications_active</mat-icon>Alerta</h3>
+      <div class="detail-badges">
+        <span class="badge badge--icon" [class.badge--warning]="a.type === 'FACE_NOT_DETECTED'" [class.badge--danger]="a.type !== 'FACE_NOT_DETECTED'">
+          <mat-icon>{{ typeIcons[a.type] }}</mat-icon>{{ typeLabels[a.type] }}
+        </span>
+        <span class="badge" [class.badge--warning]="a.level === 'MEDIUM'" [class.badge--danger]="a.level === 'HIGH'">
+          Nivel {{ levelLabels[a.level] }}
+        </span>
+      </div>
+      <dl class="detail-list">
+        <dt>Fecha</dt>
+        <dd>{{ a.date | date: 'dd/MM/yyyy' }}</dd>
+        <dt>Hora</dt>
+        <dd>{{ a.date | date: 'HH:mm:ss' }}</dd>
+        <dt>Duración</dt>
+        <dd>{{ a.durationSeconds }} seg</dd>
+      </dl>
+    </div>
+
+    <div class="form-section">
+      <h3 class="form-section__title"><mat-icon>directions_car</mat-icon>Conductor y vehículo</h3>
+      <dl class="detail-list">
+        <dt>Usuario</dt>
+        <dd>{{ a.userName }}</dd>
+        <dt>Vehículo</dt>
+        <dd>{{ a.vehiclePlate }}</dd>
+        <dt>Dispositivo</dt>
+        <dd>{{ a.deviceSerial }}</dd>
+        <dt>Ubicación</dt>
+        <dd>{{ a.location }}</dd>
+      </dl>
+    </div>
+  }
+</app-drawer>
