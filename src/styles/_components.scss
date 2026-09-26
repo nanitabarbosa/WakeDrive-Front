@@ -1,0 +1,186 @@
+// Piezas reutilizables en toda la app: card, badges, filtros, botones, avatar.
+
+.card {
+  background: var(--wd-surface);
+  border: 1px solid var(--wd-border);
+  border-radius: var(--wd-radius);
+  box-shadow: var(--wd-shadow);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto 0 0;
+    font-size: 17px;
+    font-weight: 700;
+
+    .mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+// Badges de estado
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--wd-radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+
+  &::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  &--success {
+    color: var(--wd-success);
+    background: var(--wd-success-soft);
+  }
+
+  &--danger {
+    color: var(--wd-danger);
+    background: var(--wd-danger-soft);
+  }
+
+  &--warning {
+    color: #d97706;
+    background: var(--wd-warning-soft);
+  }
+}
+
+// Filtros (buscador, select, botón enlace)
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 340px;
+  max-width: 100%;
+
+  .mat-icon {
+    position: absolute;
+    left: 10px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--wd-text-muted);
+  }
+
+  input {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px 0 36px;
+    font: inherit;
+    font-size: 13px;
+    border: 1px solid var(--wd-border);
+    border-radius: var(--wd-radius-sm);
+    outline: none;
+
+    &:focus {
+      border-color: var(--wd-primary);
+    }
+  }
+}
+
+.select {
+  height: 36px;
+  padding: 0 32px 0 12px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--wd-text);
+  background: var(--wd-surface)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%2364748b' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")
+    no-repeat right 10px center;
+  border: 1px solid var(--wd-border);
+  border-radius: var(--wd-radius-sm);
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+
+  &:focus {
+    border-color: var(--wd-primary);
+  }
+}
+
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--wd-primary);
+  background: var(--wd-surface);
+  border: 1px solid var(--wd-border);
+  border-radius: var(--wd-radius-sm);
+
+  .mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: var(--wd-primary-soft);
+  }
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: var(--wd-text);
+  background: none;
+  border: none;
+  border-radius: var(--wd-radius-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--wd-bg);
+  }
+}
+
+// Avatar con iniciales
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 50%;
+  background: var(--wd-primary);
+
+  &--lg {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+}
