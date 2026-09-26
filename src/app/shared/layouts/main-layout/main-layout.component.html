@@ -1,0 +1,66 @@
+<div class="layout" [class.layout--collapsed]="collapsed()">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <mat-icon class="sidebar__logo">visibility</mat-icon>
+      <span class="sidebar__brand-text">Wake<span>Drive</span></span>
+    </div>
+
+    <button type="button" class="sidebar__company" [matMenuTriggerFor]="companyMenu" [attr.title]="selectedCompany().name">
+      <mat-icon>apartment</mat-icon>
+      <span class="sidebar__label">{{ selectedCompany().name }}</span>
+      <mat-icon class="sidebar__label">expand_more</mat-icon>
+    </button>
+    <mat-menu #companyMenu="matMenu">
+      @for (company of companies; track company.id) {
+        <button mat-menu-item (click)="selectCompany(company)">{{ company.name }}</button>
+      }
+    </mat-menu>
+
+    <nav class="sidebar__nav">
+      @for (item of navItems; track item.route) {
+        <a
+          class="sidebar__link"
+          [routerLink]="item.route"
+          routerLinkActive="sidebar__link--active"
+          [attr.title]="collapsed() ? item.label : null"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span class="sidebar__label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <button type="button" class="sidebar__collapse" (click)="toggleMenu()">
+      <mat-icon>{{ collapsed() ? 'arrow_forward' : 'arrow_back' }}</mat-icon>
+      <span class="sidebar__label">Contraer menú</span>
+    </button>
+  </aside>
+
+  <div class="layout__main">
+    <header class="topbar">
+      <a class="topbar__bell" routerLink="/alerts" aria-label="Alertas">
+        <mat-icon>notifications</mat-icon>
+        <span class="topbar__dot"></span>
+      </a>
+
+      <button type="button" class="topbar__user" [matMenuTriggerFor]="userMenu">
+        <span class="avatar avatar--lg">{{ user.initials }}</span>
+        <span class="topbar__user-info">
+          <strong>{{ user.name }}</strong>
+          <small>{{ user.role }}</small>
+        </span>
+        <mat-icon>expand_more</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </mat-menu>
+    </header>
+
+    <main class="layout__content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
