@@ -25,6 +25,10 @@ export const ADMINISTRATION_ROUTES: Routes = [
         path: 'devices',
         loadComponent: () => import('./devices/pages/device-list/device-list.component').then(m => m.DeviceListComponent),
       },
+      {
+        path: 'settings',
+        loadComponent: () => import('./settings/pages/settings/settings.component').then(m => m.SettingsComponent),
+      },
     ],
   },
 ];
