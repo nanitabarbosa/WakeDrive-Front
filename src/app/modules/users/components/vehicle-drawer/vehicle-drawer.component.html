@@ -1,0 +1,73 @@
+<app-drawer [title]="title" [open]="open" (closed)="closed.emit()">
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <div class="form-section">
+      <h3 class="form-section__title"><mat-icon>directions_car</mat-icon>Información del vehículo</h3>
+
+      <div class="form-field">
+        <label for="vehicle-plate">Placa <span class="required">*</span></label>
+        <input id="vehicle-plate" formControlName="plate" placeholder="Ej. ABC123" maxlength="7" class="uppercase" [class.is-invalid]="hasError('plate')" />
+        @if (hasError('plate')) {
+          <small class="form-field__error">{{ errorFor('plate') }}</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="vehicle-brand">Marca <span class="required">*</span></label>
+        <input id="vehicle-brand" formControlName="brand" placeholder="Ej. Chevrolet" maxlength="50" [class.is-invalid]="hasError('brand')" />
+        @if (hasError('brand')) {
+          <small class="form-field__error">{{ errorFor('brand') }}</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="vehicle-model">Modelo <span class="required">*</span></label>
+        <input id="vehicle-model" formControlName="model" placeholder="Ej. NPR" maxlength="50" [class.is-invalid]="hasError('model')" />
+        @if (hasError('model')) {
+          <small class="form-field__error">{{ errorFor('model') }}</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="vehicle-year">Año <span class="required">*</span></label>
+        <input id="vehicle-year" type="number" formControlName="year" placeholder="Ej. 2022" [min]="minYear" [max]="maxYear" [class.is-invalid]="hasError('year')" />
+        @if (hasError('year')) {
+          <small class="form-field__error">{{ errorFor('year') }}</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="vehicle-type">Tipo <span class="required">*</span></label>
+        <select id="vehicle-type" formControlName="type">
+          @for (option of typeOptions; track option[0]) {
+            <option [value]="option[0]">{{ option[1] }}</option>
+          }
+        </select>
+      </div>
+
+      @if (mode !== 'create') {
+        <div class="form-field">
+          <label for="vehicle-status">Estado <span class="required">*</span></label>
+          <select id="vehicle-status" formControlName="status">
+            @for (option of statusOptions; track option[0]) {
+              <option [value]="option[0]">{{ option[1] }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <p class="form-alert" role="alert">{{ errorMessage() }}</p>
+    }
+  </form>
+
+  @if (mode !== 'view') {
+    <app-form-actions
+      drawer-footer
+      [saveLabel]="mode === 'edit' ? 'Guardar cambios' : 'Guardar vehículo'"
+      [loading]="saving()"
+      (save)="save()"
+      (dismiss)="closed.emit()"
+    />
+  }
+</app-drawer>
