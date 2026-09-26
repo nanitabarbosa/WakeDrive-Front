@@ -68,11 +68,19 @@ export class TableComponent<T> {
     return Math.min(this.page * this.pageSize, this.total);
   }
 
-  /** Máximo 5 botones de página alrededor de la actual. */
-  get visiblePages(): number[] {
-    const start = Math.max(1, Math.min(this.page - 2, this.totalPages - 4));
-    const end = Math.min(this.totalPages, start + 4);
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  /**
+   * Botones de página: hasta 5 alrededor de la actual, más la primera y la última
+   * con "…" (null) cuando hay saltos. Ej: 1 2 3 4 5 … 25
+   */
+  get visiblePages(): (number | null)[] {
+    const total = this.totalPages;
+    const start = Math.max(1, Math.min(this.page - 2, total - 4));
+    const end = Math.min(total, start + 4);
+    const pages: (number | null)[] = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+
+    if (start > 1) pages.unshift(...(start > 2 ? [1, null] : [1]));
+    if (end < total) pages.push(...(end < total - 1 ? [null, total] : [total]));
+    return pages;
   }
 
   get allSelected(): boolean {

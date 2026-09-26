@@ -144,3 +144,20 @@
     }
   }
 }
+
+.row-actions__btn--neutral {
+  color: var(--wd-text);
+
+  &:hover {
+    background: var(--wd-bg);
+  }
+}
+
+.pagination__ellipsis {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 24px;
+  padding-bottom: 8px;
+  color: var(--wd-text-muted);
+}
