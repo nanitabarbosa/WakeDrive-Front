@@ -17,6 +17,10 @@ export const ADMINISTRATION_ROUTES: Routes = [
         path: 'users',
         loadComponent: () => import('./users/pages/user-list/user-list.component').then(m => m.UserListComponent),
       },
+      {
+        path: 'alerts',
+        loadComponent: () => import('./alerts/pages/alert-list/alert-list.component').then(m => m.AlertListComponent),
+      },
     ],
   },
 ];
