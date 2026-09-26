@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { AuthResponse, LoginRequest } from '../interfaces/auth.interface';
@@ -28,9 +28,16 @@ export class AuthService {
   ) {}
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this._http
-      .post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)
-      .pipe(tap(res => this.setSession(res)));
+    // TODO(back): quitar el login simulado y descomentar la llamada real cuando el back esté listo.
+    // return this._http
+    //   .post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)
+    //   .pipe(tap(res => this.setSession(res)));
+    const mock: AuthResponse = {
+      token: 'mock-token',
+      roles: ['ADMIN'],
+      user: { name: credentials.email, role: 'ADMIN' },
+    };
+    return of(mock).pipe(tap(res => this.setSession(res)));
   }
 
   logout(): void {
