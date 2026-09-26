@@ -41,8 +41,11 @@
   </section>
   <div class="layout__main">
     <div class="topbar">
-      <button type="button" class="topbar__bell" routerLink="/alerts" aria-label="Alertas">
+      <button type="button" class="topbar__bell" aria-label="Notificaciones" (click)="openNotifications()">
         <mat-icon>notifications</mat-icon>
+        @if (unreadNotifications) {
+          <span class="topbar__badge">{{ unreadNotifications > 9 ? '9+' : unreadNotifications }}</span>
+        }
       </button>
       <button type="button" class="topbar__user" [matMenuTriggerFor]="userMenu">
         @if (user; as u) {
@@ -62,6 +65,7 @@
           <span>Cerrar sesión</span>
         </button>
       </mat-menu>
+      <app-notifications-modal [open]="notificationsOpen()" (closed)="closeNotifications()" />
     </div>
     <section class="layout__content">
       <router-outlet />

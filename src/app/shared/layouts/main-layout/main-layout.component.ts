@@ -6,6 +6,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Company } from '../../../core/interfaces/company.interface';
 import { AuthService } from '../../../core/services/auth.service';
 import { CompanyService } from '../../../core/services/company.service';
+import { NotificationsModalComponent } from '../../../modules/notifications/modal/notifications-modal.component';
+import { NotificationService } from '../../../modules/notifications/services/notification.service';
 
 interface NavItem {
   label: string;
@@ -16,7 +18,7 @@ interface NavItem {
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatIconModule, MatMenuModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatIconModule, MatMenuModule, NotificationsModalComponent],
   templateUrl: './main-layout.component.html',
 })
 export class MainLayoutComponent implements OnInit {
@@ -30,10 +32,12 @@ export class MainLayoutComponent implements OnInit {
   ];
 
   readonly companies = signal<Company[]>([]);
+  readonly notificationsOpen = signal(false);
 
   constructor(
     private _authService: AuthService,
     private _companyService: CompanyService,
+    private _notificationService: NotificationService,
   ) {}
 
   get user() {
@@ -44,8 +48,13 @@ export class MainLayoutComponent implements OnInit {
     return this._companyService.selected();
   }
 
+  get unreadNotifications(): number {
+    return this._notificationService.unreadCount();
+  }
+
   ngOnInit(): void {
     this.loadCompanies();
+    this.loadNotificationCounts();
   }
 
   loadCompanies(): void {
@@ -53,6 +62,18 @@ export class MainLayoutComponent implements OnInit {
       next: companies => this.companies.set(companies),
       error: () => this.companies.set([]),
     });
+  }
+
+  loadNotificationCounts(): void {
+    this._notificationService.getCounts().subscribe({ error: () => undefined });
+  }
+
+  openNotifications(): void {
+    this.notificationsOpen.set(true);
+  }
+
+  closeNotifications(): void {
+    this.notificationsOpen.set(false);
   }
 
   toggleMenu(): void {

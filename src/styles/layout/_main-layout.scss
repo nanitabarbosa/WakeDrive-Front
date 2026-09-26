@@ -155,6 +155,24 @@
     }
   }
 
+  &__badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--wd-danger);
+    border: 2px solid var(--wd-bg);
+    border-radius: 9px;
+  }
+
   &__dot {
     position: absolute;
     top: 6px;
