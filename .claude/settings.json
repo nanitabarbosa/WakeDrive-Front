@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git -C \"$CLAUDE_PROJECT_DIR\" add -A 2>/dev/null || true",
+            "statusMessage": "Staging changes in git"
+          }
+        ]
+      }
+    ]
+  }
+}
