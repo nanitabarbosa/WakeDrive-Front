@@ -20,12 +20,14 @@ export interface DeviceSummary {
   vehiclePlate: string;
   assignedUser: string;
   status: DeviceStatus;
-  lastConnection: Date;
+  /** Fecha ISO. */
+  lastConnection: string;
 }
 
 export interface AlertSummary {
   id: number;
-  date: Date;
+  /** Fecha y hora ISO. */
+  date: string;
   user: string;
   vehiclePlate: string;
   location: string;
@@ -35,11 +37,31 @@ export interface AlertSummary {
 }
 
 export interface DailyAlerts {
-  date: Date;
+  /** Fecha ISO (yyyy-MM-dd). */
+  date: string;
   total: number;
 }
 
 export interface UserAlertRanking {
+  userId: number;
   name: string;
   total: number;
+}
+
+/** Rango de fechas del dashboard (yyyy-MM-dd). */
+export interface DateRange {
+  from: string;
+  to: string;
+}
+
+export interface DeviceFilters {
+  search: string;
+  status: DeviceStatus | '';
+  limit: number;
+}
+
+export interface AlertFilters {
+  search: string;
+  type: AlertType | '';
+  limit: number;
 }

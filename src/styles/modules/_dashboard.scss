@@ -310,3 +310,30 @@
     width: 100%;
   }
 }
+
+// Estados sin datos / error (mientras el back no responda)
+.dashboard__notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #b91c1c;
+  background: var(--wd-danger-soft);
+  border-radius: var(--wd-radius-sm);
+
+  .mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.dashboard__empty {
+  margin: 0;
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--wd-text-muted);
+}

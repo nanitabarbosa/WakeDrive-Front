@@ -16,38 +16,48 @@
     </button>
   </app-page-header>
 
-  <!-- Tarjetas de resumen -->
-  @if (stats(); as s) {
-    <div class="dashboard__stats">
-      <article class="stat-card stat-card--blue">
-        <span class="stat-card__icon"><mat-icon>local_shipping</mat-icon></span>
-        <div>
-          <p class="stat-card__label">Vehículos registrados</p>
-          <p class="stat-card__value">{{ s.vehicles.total }}</p>
+  <!-- Tarjetas de resumen: muestran "—" mientras no haya datos del back -->
+  @let s = stats();
+  @if (errors().stats) {
+    <p class="dashboard__notice" role="alert">
+      <mat-icon>error_outline</mat-icon>No se pudo cargar el resumen. Intenta actualizar más tarde.
+    </p>
+  }
+  <div class="dashboard__stats">
+    <article class="stat-card stat-card--blue">
+      <span class="stat-card__icon"><mat-icon>local_shipping</mat-icon></span>
+      <div>
+        <p class="stat-card__label">Vehículos registrados</p>
+        <p class="stat-card__value">{{ s?.vehicles?.total ?? '—' }}</p>
+        @if (s) {
           <span class="stat-card__trend" [class.stat-card__trend--good]="s.vehicles.variation >= 0" [class.stat-card__trend--bad]="s.vehicles.variation < 0">
             <mat-icon>{{ s.vehicles.variation >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>{{ s.vehicles.variation }}%
           </span>
           <p class="stat-card__hint">vs. mes anterior</p>
-        </div>
-      </article>
+        }
+      </div>
+    </article>
 
-      <article class="stat-card stat-card--green">
-        <span class="stat-card__icon"><mat-icon>group</mat-icon></span>
-        <div>
-          <p class="stat-card__label">Usuarios activos</p>
-          <p class="stat-card__value">{{ s.activeUsers.total }}</p>
+    <article class="stat-card stat-card--green">
+      <span class="stat-card__icon"><mat-icon>group</mat-icon></span>
+      <div>
+        <p class="stat-card__label">Usuarios activos</p>
+        <p class="stat-card__value">{{ s?.activeUsers?.total ?? '—' }}</p>
+        @if (s) {
           <span class="stat-card__trend" [class.stat-card__trend--good]="s.activeUsers.variation >= 0" [class.stat-card__trend--bad]="s.activeUsers.variation < 0">
             <mat-icon>{{ s.activeUsers.variation >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>{{ s.activeUsers.variation }}%
           </span>
           <p class="stat-card__hint">vs. mes anterior</p>
-        </div>
-      </article>
+        }
+      </div>
+    </article>
 
-      <article class="stat-card stat-card--purple">
-        <span class="stat-card__icon"><mat-icon>tablet_android</mat-icon></span>
-        <div>
-          <p class="stat-card__label">Dispositivos</p>
-          <p class="stat-card__value">{{ s.devices.total }}</p>
+    <article class="stat-card stat-card--purple">
+      <span class="stat-card__icon"><mat-icon>tablet_android</mat-icon></span>
+      <div>
+        <p class="stat-card__label">Dispositivos</p>
+        <p class="stat-card__value">{{ s?.devices?.total ?? '—' }}</p>
+        @if (s) {
           <div class="stat-card__split">
             <span class="stat-card__split-item">
               <span class="stat-card__dot stat-card__dot--success"></span>
@@ -58,44 +68,41 @@
               <span><strong>{{ s.devices.offline }}</strong>Sin conexión</span>
             </span>
           </div>
-        </div>
-      </article>
+        }
+      </div>
+    </article>
 
-      <!-- En alertas, subir es malo: el color se invierte -->
-      <article class="stat-card stat-card--red">
-        <span class="stat-card__icon"><mat-icon>warning</mat-icon></span>
-        <div>
-          <p class="stat-card__label">Alertas hoy</p>
-          <p class="stat-card__value">{{ s.alertsToday.total }}</p>
+    <!-- En alertas, subir es malo: el color se invierte -->
+    <article class="stat-card stat-card--red">
+      <span class="stat-card__icon"><mat-icon>warning</mat-icon></span>
+      <div>
+        <p class="stat-card__label">Alertas hoy</p>
+        <p class="stat-card__value">{{ s?.alertsToday?.total ?? '—' }}</p>
+        @if (s) {
           <span class="stat-card__trend" [class.stat-card__trend--bad]="s.alertsToday.variation > 0" [class.stat-card__trend--good]="s.alertsToday.variation <= 0">
             <mat-icon>{{ s.alertsToday.variation >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>{{ s.alertsToday.variation }}%
           </span>
           <p class="stat-card__hint">vs. día anterior</p>
-        </div>
-      </article>
-    </div>
-  }
+        }
+      </div>
+    </article>
+  </div>
 
-  <!-- Estado de dispositivos -->
+  <!-- Estado de dispositivos: búsqueda y filtro se envían al back -->
   <app-table
     title="Estado de dispositivos"
     icon="smartphone"
     iconClass="icon--success"
     [columns]="deviceColumns"
-    [data]="filteredDevices()"
+    [data]="devices()"
     [customColumns]="['status', 'lastConnection']"
-    emptyMessage="No hay dispositivos que coincidan con la búsqueda."
+    [emptyMessage]="errors().devices ? 'No se pudieron cargar los dispositivos.' : 'No hay dispositivos para mostrar.'"
   >
     <label class="search" table-actions>
       <mat-icon>search</mat-icon>
-      <input
-        type="search"
-        placeholder="Buscar por serial, vehículo o usuario..."
-        [value]="deviceSearch()"
-        (input)="deviceSearch.set($any($event.target).value)"
-      />
+      <input type="search" placeholder="Buscar por serial, vehículo o usuario..." (input)="onDeviceSearch($any($event.target).value)" />
     </label>
-    <select class="select" table-actions [value]="deviceStatus()" (change)="deviceStatus.set($any($event.target).value)">
+    <select class="select" table-actions [value]="deviceStatus()" (change)="onDeviceStatusChange($any($event.target).value)" aria-label="Filtrar por estado">
       <option value="">Todos los estados</option>
       <option value="ACTIVE">Activo</option>
       <option value="OFFLINE">Sin conexión</option>
@@ -116,26 +123,21 @@
     </ng-template>
   </app-table>
 
-  <!-- Últimas alertas -->
+  <!-- Últimas alertas: búsqueda y filtro se envían al back -->
   <app-table
     title="Últimas alertas"
     icon="notifications_active"
     iconClass="icon--danger"
     [columns]="alertColumns"
-    [data]="filteredAlerts()"
+    [data]="alerts()"
     [customColumns]="['date', 'time', 'type', 'durationSeconds', 'level']"
-    emptyMessage="No hay alertas que coincidan con la búsqueda."
+    [emptyMessage]="errors().alerts ? 'No se pudieron cargar las alertas.' : 'No hay alertas para mostrar.'"
   >
     <label class="search" table-actions>
       <mat-icon>search</mat-icon>
-      <input
-        type="search"
-        placeholder="Buscar por conductor, vehículo o ubicación..."
-        [value]="alertSearch()"
-        (input)="alertSearch.set($any($event.target).value)"
-      />
+      <input type="search" placeholder="Buscar por conductor, vehículo o ubicación..." (input)="onAlertSearch($any($event.target).value)" />
     </label>
-    <select class="select" table-actions [value]="alertType()" (change)="alertType.set($any($event.target).value)">
+    <select class="select" table-actions [value]="alertType()" (change)="onAlertTypeChange($any($event.target).value)" aria-label="Filtrar por tipo">
       <option value="">Todos los tipos</option>
       <option value="DROWSINESS">Somnolencia detectada</option>
       <option value="FACE_NOT_DETECTED">Rostro no detectado</option>
@@ -174,57 +176,65 @@
     <article class="card">
       <div class="card__header">
         <h2 class="card__title"><mat-icon class="icon--primary">bar_chart</mat-icon>Alertas por día</h2>
-        <select class="select" [value]="chartDays()" (change)="onChartDaysChange($any($event.target).value)">
+        <select class="select" [value]="chartDays()" (change)="onChartDaysChange($any($event.target).value)" aria-label="Periodo">
           @for (days of periodOptions; track days) {
             <option [value]="days">Últimos {{ days }} días</option>
           }
         </select>
       </div>
 
-      <div class="bar-chart">
-        <div class="bar-chart__axis">
-          @for (tick of chartTicks(); track tick) {
-            <span>{{ tick }}</span>
-          }
+      @if (alertsByDay().length) {
+        <div class="bar-chart">
+          <div class="bar-chart__axis">
+            @for (tick of chartTicks(); track tick) {
+              <span>{{ tick }}</span>
+            }
+          </div>
+          <div class="bar-chart__bars">
+            @for (day of alertsByDay(); track day.date) {
+              <div class="bar-chart__col" [attr.title]="day.total + ' alertas'">
+                @if (alertsByDay().length <= 14) {
+                  <span class="bar-chart__value">{{ day.total }}</span>
+                }
+                <div class="bar-chart__bar" [style.height.%]="(day.total / chartMax()) * 100"></div>
+                @if (alertsByDay().length <= 14 || $index % 5 === 0) {
+                  <span class="bar-chart__label">{{ day.date | date: 'd MMM' }}</span>
+                }
+              </div>
+            }
+          </div>
         </div>
-        <div class="bar-chart__bars">
-          @for (day of alertsByDay(); track day.date.getTime()) {
-            <div class="bar-chart__col" [attr.title]="day.total + ' alertas'">
-              @if (alertsByDay().length <= 14) {
-                <span class="bar-chart__value">{{ day.total }}</span>
-              }
-              <div class="bar-chart__bar" [style.height.%]="(day.total / chartMax()) * 100"></div>
-              @if (alertsByDay().length <= 14 || $index % 5 === 0) {
-                <span class="bar-chart__label">{{ day.date | date: 'd MMM' }}</span>
-              }
-            </div>
-          }
-        </div>
-      </div>
+      } @else {
+        <p class="dashboard__empty">{{ errors().alertsByDay ? 'No se pudieron cargar las alertas por día.' : 'No hay datos para este periodo.' }}</p>
+      }
     </article>
 
     <!-- Usuarios con más alertas -->
     <article class="card">
       <div class="card__header">
         <h2 class="card__title"><mat-icon>person</mat-icon>Usuarios con más alertas</h2>
-        <select class="select" [value]="rankingDays()" (change)="onRankingDaysChange($any($event.target).value)">
+        <select class="select" [value]="rankingDays()" (change)="onRankingDaysChange($any($event.target).value)" aria-label="Periodo">
           @for (days of periodOptions; track days) {
             <option [value]="days">Últimos {{ days }} días</option>
           }
         </select>
       </div>
 
-      <ol class="ranking">
-        @for (user of topUsers(); track user.name; let i = $index) {
-          <li class="ranking__item">
-            <span class="ranking__position">{{ i + 1 }}</span>
-            <span class="avatar" [style.background]="avatarColors[i % avatarColors.length]">{{ initials(user.name) }}</span>
-            <span>{{ user.name }}</span>
-            <span class="ranking__track"><span class="ranking__fill" [style.width.%]="(user.total / rankingMax()) * 100"></span></span>
-            <span class="ranking__total">{{ user.total }}</span>
-          </li>
-        }
-      </ol>
+      @if (topUsers().length) {
+        <ol class="ranking">
+          @for (user of topUsers(); track user.userId; let i = $index) {
+            <li class="ranking__item">
+              <span class="ranking__position">{{ i + 1 }}</span>
+              <span class="avatar" [style.background]="avatarColors[i % avatarColors.length]">{{ initials(user.name) }}</span>
+              <span>{{ user.name }}</span>
+              <span class="ranking__track"><span class="ranking__fill" [style.width.%]="(user.total / rankingMax()) * 100"></span></span>
+              <span class="ranking__total">{{ user.total }}</span>
+            </li>
+          }
+        </ol>
+      } @else {
+        <p class="dashboard__empty">{{ errors().topUsers ? 'No se pudo cargar el ranking de usuarios.' : 'No hay datos para este periodo.' }}</p>
+      }
     </article>
   </div>
 </section>

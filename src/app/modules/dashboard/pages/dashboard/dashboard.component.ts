@@ -1,8 +1,10 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Component, DestroyRef, OnInit, computed, signal } from '@angular/core';
+import { DatePipe, formatDate } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { TableComponent } from '../../../../shared/components/table/table.component';
@@ -25,6 +27,8 @@ interface DateRangePreset {
 }
 
 const DAY = 24 * 60 * 60 * 1000;
+/** Cantidad de filas de las tablas y del ranking del dashboard. */
+const LIMIT = 5;
 
 @Component({
   selector: 'app-dashboard',
@@ -67,19 +71,21 @@ export class DashboardComponent implements OnInit {
   };
   readonly rangePresets: DateRangePreset[] = [
     { label: 'Hoy', days: 1 },
-    { label: 'Últimos 4 días', days: 4 },
     { label: 'Últimos 7 días', days: 7 },
     { label: 'Últimos 30 días', days: 30 },
   ];
   readonly periodOptions = [7, 14, 30];
   readonly avatarColors = ['#2f6fed', '#16a34a', '#f59e0b', '#7c5cf5', '#ec4899'];
 
+  // Datos (vienen del back) y estado de error de cada bloque.
   readonly stats = signal<DashboardStats | null>(null);
   readonly devices = signal<DeviceSummary[]>([]);
   readonly alerts = signal<AlertSummary[]>([]);
   readonly alertsByDay = signal<DailyAlerts[]>([]);
   readonly topUsers = signal<UserAlertRanking[]>([]);
+  readonly errors = signal({ stats: false, devices: false, alerts: false, alertsByDay: false, topUsers: false });
 
+  // Filtros: se envían al back.
   readonly dateRange = signal({ start: new Date(), end: new Date() });
   readonly deviceSearch = signal('');
   readonly deviceStatus = signal<DeviceStatus | ''>('');
@@ -88,42 +94,48 @@ export class DashboardComponent implements OnInit {
   readonly chartDays = signal(7);
   readonly rankingDays = signal(7);
 
-  // TODO(back): cuando exista el API, búsqueda y filtros se envían como query params.
-  readonly filteredDevices = computed(() => {
-    const term = this.deviceSearch().trim().toLowerCase();
-    const status = this.deviceStatus();
-    return this.devices().filter(
-      device =>
-        (!status || device.status === status) &&
-        (!term || [device.serial, device.vehiclePlate, device.assignedUser].some(v => v.toLowerCase().includes(term))),
-    );
-  });
-
-  readonly filteredAlerts = computed(() => {
-    const term = this.alertSearch().trim().toLowerCase();
-    const type = this.alertType();
-    return this.alerts().filter(
-      alert =>
-        (!type || alert.type === type) &&
-        (!term || [alert.user, alert.vehiclePlate, alert.location].some(v => v.toLowerCase().includes(term))),
-    );
-  });
-
   /** Tope del eje Y: el máximo redondeado hacia arriba al múltiplo de 5. */
   readonly chartMax = computed(() => Math.max(5, Math.ceil(Math.max(0, ...this.alertsByDay().map(d => d.total)) / 5) * 5));
   readonly chartTicks = computed(() => Array.from({ length: this.chartMax() / 5 + 1 }, (_, i) => i * 5));
   readonly rankingMax = computed(() => Math.max(1, ...this.topUsers().map(u => u.total)));
 
-  constructor(private _dashboardService: DashboardService) {}
+  private readonly _deviceSearch$ = new Subject<string>();
+  private readonly _alertSearch$ = new Subject<string>();
+
+  constructor(
+    private _dashboardService: DashboardService,
+    private _destroyRef: DestroyRef,
+  ) {}
 
   ngOnInit(): void {
-    this.setDateRange(this.rangePresets[1]);
+    this.listenSearches();
+    this.applyDateRange(this.rangePresets[1]);
+    this.loadDashboard();
+  }
+
+  listenSearches(): void {
+    this._deviceSearch$
+      .pipe(debounceTime(350), distinctUntilChanged(), takeUntilDestroyed(this._destroyRef))
+      .subscribe(term => {
+        this.deviceSearch.set(term);
+        this.loadDevices();
+      });
+    this._alertSearch$
+      .pipe(debounceTime(350), distinctUntilChanged(), takeUntilDestroyed(this._destroyRef))
+      .subscribe(term => {
+        this.alertSearch.set(term);
+        this.loadAlerts();
+      });
   }
 
   setDateRange(preset: DateRangePreset): void {
+    this.applyDateRange(preset);
+    this.loadStats();
+  }
+
+  applyDateRange(preset: DateRangePreset): void {
     const end = new Date();
     this.dateRange.set({ start: new Date(end.getTime() - (preset.days - 1) * DAY), end });
-    this.loadDashboard();
   }
 
   loadDashboard(): void {
@@ -135,23 +147,57 @@ export class DashboardComponent implements OnInit {
   }
 
   loadStats(): void {
-    this._dashboardService.getStats().subscribe(stats => this.stats.set(stats));
+    const { start, end } = this.dateRange();
+    this._dashboardService.getStats({ from: this.toIsoDate(start), to: this.toIsoDate(end) }).subscribe({
+      next: stats => this.setResult('stats', () => this.stats.set(stats)),
+      error: () => this.setError('stats', () => this.stats.set(null)),
+    });
   }
 
   loadDevices(): void {
-    this._dashboardService.getDevices().subscribe(devices => this.devices.set(devices));
+    this._dashboardService.getDevices({ search: this.deviceSearch(), status: this.deviceStatus(), limit: LIMIT }).subscribe({
+      next: devices => this.setResult('devices', () => this.devices.set(devices)),
+      error: () => this.setError('devices', () => this.devices.set([])),
+    });
   }
 
   loadAlerts(): void {
-    this._dashboardService.getLatestAlerts().subscribe(alerts => this.alerts.set(alerts));
+    this._dashboardService.getLatestAlerts({ search: this.alertSearch(), type: this.alertType(), limit: LIMIT }).subscribe({
+      next: alerts => this.setResult('alerts', () => this.alerts.set(alerts)),
+      error: () => this.setError('alerts', () => this.alerts.set([])),
+    });
   }
 
   loadAlertsByDay(): void {
-    this._dashboardService.getAlertsByDay(this.chartDays()).subscribe(data => this.alertsByDay.set(data));
+    this._dashboardService.getAlertsByDay(this.chartDays()).subscribe({
+      next: data => this.setResult('alertsByDay', () => this.alertsByDay.set(data)),
+      error: () => this.setError('alertsByDay', () => this.alertsByDay.set([])),
+    });
   }
 
   loadTopUsers(): void {
-    this._dashboardService.getTopUsers(this.rankingDays()).subscribe(users => this.topUsers.set(users));
+    this._dashboardService.getTopUsers(this.rankingDays(), LIMIT).subscribe({
+      next: users => this.setResult('topUsers', () => this.topUsers.set(users)),
+      error: () => this.setError('topUsers', () => this.topUsers.set([])),
+    });
+  }
+
+  onDeviceSearch(term: string): void {
+    this._deviceSearch$.next(term.trim());
+  }
+
+  onDeviceStatusChange(status: string): void {
+    this.deviceStatus.set(status as DeviceStatus | '');
+    this.loadDevices();
+  }
+
+  onAlertSearch(term: string): void {
+    this._alertSearch$.next(term.trim());
+  }
+
+  onAlertTypeChange(type: string): void {
+    this.alertType.set(type as AlertType | '');
+    this.loadAlerts();
   }
 
   onChartDaysChange(days: string): void {
@@ -166,10 +212,25 @@ export class DashboardComponent implements OnInit {
 
   initials(name: string): string {
     return name
-      .split(' ')
+      .trim()
+      .split(/\s+/)
       .map(part => part[0])
       .slice(0, 2)
       .join('')
       .toUpperCase();
+  }
+
+  private setResult(block: keyof ReturnType<typeof this.errors>, apply: () => void): void {
+    apply();
+    this.errors.update(errors => ({ ...errors, [block]: false }));
+  }
+
+  private setError(block: keyof ReturnType<typeof this.errors>, apply: () => void): void {
+    apply();
+    this.errors.update(errors => ({ ...errors, [block]: true }));
+  }
+
+  private toIsoDate(date: Date): string {
+    return formatDate(date, 'yyyy-MM-dd', 'en-US');
   }
 }

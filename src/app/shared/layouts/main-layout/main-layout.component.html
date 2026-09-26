@@ -5,13 +5,19 @@
       <span class="sidebar__brand-text">Wake<span>Drive</span></span>
     </div>
 
-    <button type="button" class="sidebar__company" [matMenuTriggerFor]="companyMenu" [attr.title]="selectedCompany().name">
+    <button
+      type="button"
+      class="sidebar__company"
+      [matMenuTriggerFor]="companyMenu"
+      [disabled]="!companies().length"
+      [attr.title]="selectedCompany?.name ?? 'Sin empresas'"
+    >
       <mat-icon>apartment</mat-icon>
-      <span class="sidebar__label">{{ selectedCompany().name }}</span>
+      <span class="sidebar__label">{{ selectedCompany?.name ?? 'Sin empresas' }}</span>
       <mat-icon class="sidebar__label">expand_more</mat-icon>
     </button>
     <mat-menu #companyMenu="matMenu">
-      @for (company of companies; track company.id) {
+      @for (company of companies(); track company.id) {
         <button mat-menu-item (click)="selectCompany(company)">{{ company.name }}</button>
       }
     </mat-menu>
@@ -40,15 +46,18 @@
     <header class="topbar">
       <a class="topbar__bell" routerLink="/alerts" aria-label="Alertas">
         <mat-icon>notifications</mat-icon>
-        <span class="topbar__dot"></span>
       </a>
 
       <button type="button" class="topbar__user" [matMenuTriggerFor]="userMenu">
-        <span class="avatar avatar--lg">{{ user.initials }}</span>
-        <span class="topbar__user-info">
-          <strong>{{ user.name }}</strong>
-          <small>{{ user.role }}</small>
-        </span>
+        @if (user; as u) {
+          <span class="avatar avatar--lg">{{ initials(u.name) }}</span>
+          <span class="topbar__user-info">
+            <strong>{{ u.name }}</strong>
+            <small>{{ u.role }}</small>
+          </span>
+        } @else {
+          <span class="avatar avatar--lg"><mat-icon>person</mat-icon></span>
+        }
         <mat-icon>expand_more</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu" xPosition="before">
