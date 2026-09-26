@@ -76,16 +76,102 @@ src/app/
 │   └── services/      # AuthService (token y roles en signals + localStorage)
 ├── shared/       # Componentes y layouts reutilizables
 │   └── layouts/main-layout/  # Sidenav + toolbar para las rutas autenticadas
-└── modules/      # Un feature por carpeta, cada uno con su <feature>.routes.ts
-    ├── auth/          # login, request-access (sin sesión)
+└── modules/      # Un feature por carpeta
+    ├── administration.routes.ts  # TODAS las rutas del panel (layout + páginas)
+    ├── auth/          # login, request-access (sin sesión) — auth.routes.ts
     ├── dashboard/
     ├── alerts/
     ├── users/
     ├── vehicles/
-    └── devices/
+    ├── devices/
+    └── settings/
 ```
 
-- Standalone components, sin NgModules. Cada feature se carga con lazy loading (`loadChildren` → `<FEATURE>_ROUTES`).
-- Estructura del feature: `pages/` (componentes enrutados); se agregan `components/`, `services/` e `interfaces/` dentro del feature cuando haga falta.
-- Usar control flow (`@if`, `@for`), `inject()` y signals.
+- Standalone components, sin NgModules.
+- **Rutas**: todas las rutas del panel van en una sola hoja, `modules/administration.routes.ts` (cada página con `loadComponent`). Los features NO tienen su propio `*.routes.ts`. La única excepción es `auth/auth.routes.ts` (pantallas sin sesión). `app.routes.ts` solo carga `auth` y `administration`.
+- Usar control flow (`@if`, `@for`) y signals.
 - Backend Spring Boot: `Page<T>` llega como `{ content, page: { size, number, totalElements, totalPages } }` (ver `core/interfaces/page.interface.ts`).
+
+## Paginación y filtros: SIEMPRE en el back (regla obligatoria)
+
+- Los listados se paginan, filtran y ordenan en el backend. El servicio envía `page` (base 0, como Spring), `size` y los filtros como `HttpParams` y devuelve `Page<T>`.
+- Nunca paginar, filtrar ni ordenar arreglos en el front (ni con `slice`, ni con `filter`, ni en datos de prueba).
+- Mientras el back no exista, los servicios apuntan igual a los endpoints reales (marcados con `TODO(back)`); la tabla muestra el error de carga.
+- Los selects/dropdowns consumen endpoints sin paginar que devuelven `T[]`.
+
+---
+
+# Code conventions (reglas obligatorias)
+
+## Estructura de carpetas
+
+- Cada componente vive en su propia carpeta con su `.ts` y su `.html` (el `.scss` del componente NO se usa, ver Estilos).
+- Cada feature tiene sus carpetas `interfaces/` y `services/`:
+
+```
+modules/<feature>/
+├── interfaces/
+│   └── <nombre>.interface.ts
+├── services/
+│   └── <nombre>.service.ts
+└── pages/
+    └── <componente>/
+        ├── <componente>.component.ts
+        └── <componente>.component.html
+```
+
+## Estilos
+
+- No se usa el `styleUrl` / `.scss` que genera el componente. Al generar componentes usar `--style=none` (o borrar el `.scss` y quitar `styleUrl`).
+- Todos los estilos van en `src/styles/`, en parciales con prefijo `_` (ej. `src/styles/modules/_onboarding.scss`).
+- Cada parcial se importa en `src/styles.scss` (la hoja principal).
+
+## Componentes reutilizables (`shared/components/`) — obligatorio usarlos
+
+Toda página empieza así:
+
+```html
+<section class="wrapper-section">
+  <app-page-header title="Usuarios" subtitle="Gestiona los usuarios de tu empresa.">
+    <!-- botones opcionales a la derecha -->
+  </app-page-header>
+  ...
+</section>
+```
+
+- **`.wrapper-section`** (`styles/components/_wrapper-section.scss`): contenedor raíz de cada página; define el padding y la separación entre bloques. No poner padding propio en las páginas.
+- **`app-page-header`**: título + subtítulo; lo proyectado va a la derecha.
+- **`app-table`**: toda tabla usa este componente.
+  - `[columns]` (`TableColumn[]`), `[data]`, `title`, `icon`, `iconClass`, `emptyMessage`.
+  - Filtros/botones del encabezado: contenido con el atributo `table-actions`.
+  - Celdas personalizadas: `[customColumns]="['status']"` + `<ng-template #cellTemplate let-row let-column="column">` con `@switch (column.key)`.
+  - Paginación: `[paginated]="true" [page] [pageSize] [total] (pageChange)`.
+- **`app-drawer`**: panel derecho para crear/editar. Se superpone al contenido (no lo desplaza). `[open]`, `title`, `(closed)`; el pie se proyecta con el atributo `drawer-footer`. Dentro usar `.form-section` / `.form-field`.
+- **`app-form-actions`**: botones Cancelar / Guardar. `saveLabel`, `cancelLabel`, `[disabled]`, `[loading]`, `(save)`, `(dismiss)`.
+
+```html
+<app-drawer title="Nuevo usuario" [open]="drawerOpen()" (closed)="closeDrawer()">
+  <div class="form-section">...</div>
+  <app-form-actions drawer-footer saveLabel="Guardar usuario" (save)="save()" (dismiss)="closeDrawer()" />
+</app-drawer>
+```
+
+## Componentes
+
+- Las dependencias se inyectan por constructor y su nombre lleva prefijo `_`:
+
+```typescript
+constructor(
+  private _authService: AuthService,
+  private _router: Router,
+) {}
+```
+
+- `ngOnInit` solo llama métodos de inicialización; no contiene lógica:
+
+```typescript
+ngOnInit(): void {
+  this.buildForm();
+  this.loadCompanies();
+}
+```

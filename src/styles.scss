@@ -1,4 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+// Hoja principal: solo importa los parciales de src/styles/.
+@use 'styles/variables';
+@use 'styles/base';
+@use 'styles/components';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+// Componentes reutilizables (shared/components)
+@use 'styles/components/wrapper-section';
+@use 'styles/components/page-header';
+@use 'styles/components/table';
+@use 'styles/components/drawer';
+@use 'styles/components/form-actions';
+@use 'styles/components/confirm-dialog';
+
+// Layouts
+@use 'styles/layout/main-layout';
+
+// Módulos
+@use 'styles/modules/dashboard';
