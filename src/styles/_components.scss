@@ -184,3 +184,102 @@
     font-size: 12px;
   }
 }
+
+// Sin título en la card: la barra de filtros ocupa todo el ancho.
+.card__actions:only-child {
+  flex: 1;
+}
+
+// Barra de filtros de un listado (buscador + botón / selects)
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .search {
+    flex: 1;
+    width: auto;
+    min-width: 220px;
+  }
+
+  .select {
+    min-width: 170px;
+  }
+}
+
+// Pestañas
+.tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--wd-border);
+  overflow-x: auto;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--wd-text);
+    white-space: nowrap;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: var(--wd-radius-sm) var(--wd-radius-sm) 0 0;
+    cursor: pointer;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background: var(--wd-surface);
+    }
+
+    &--active {
+      font-weight: 600;
+      color: var(--wd-primary);
+      background: var(--wd-surface);
+      border-bottom-color: var(--wd-primary);
+    }
+  }
+}
+
+// Chips (rol, tipo)
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
+  background: #f1f5f9;
+  border: 1px solid var(--wd-border);
+  border-radius: var(--wd-radius-sm);
+
+  &--purple {
+    color: var(--wd-purple);
+    background: var(--wd-purple-soft);
+    border-color: transparent;
+  }
+
+  &--blue {
+    color: var(--wd-primary);
+    background: var(--wd-primary-soft);
+    border-color: transparent;
+  }
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
