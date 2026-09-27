@@ -47,7 +47,7 @@
             <span class="form-field__error">{{ errorFor('password') }}</span>
           }
         </div>
-        <button type="button" class="auth-form__forgot">¿Olvidaste tu contraseña?</button>
+        <button type="button" class="auth-form__forgot" routerLink="/auth/forgot-password">¿Olvidaste tu contraseña?</button>
         @if (errorMessage()) {
           <span class="auth-form__alert" role="alert">{{ errorMessage() }}</span>
         }
